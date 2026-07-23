@@ -29,13 +29,13 @@
   --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-* {
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body, #root {
+html {
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
@@ -46,8 +46,17 @@ body {
   background-color: var(--bg-oled);
   color: var(--text-primary);
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
   line-height: 1.6;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 /* 1. Header & Floating Navigation */
@@ -56,6 +65,7 @@ header {
   top: 1rem;
   z-index: 100;
   padding: 0 1rem;
+  width: 100%;
 }
 
 .floating-nav {
@@ -69,6 +79,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
 }
 
@@ -81,17 +92,7 @@ header {
   letter-spacing: -0.03em;
   text-decoration: none;
   color: var(--text-primary);
-}
-
-.logo-badge-shell {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: rgba(245, 158, 11, 0.15);
-  border: 1px solid var(--border-accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-shrink: 0;
 }
 
 .nav-links {
@@ -109,6 +110,7 @@ header {
   transition: all 0.25s var(--ease-fluid);
   padding: 0.35rem 0.75rem;
   border-radius: var(--radius-pill);
+  white-space: nowrap;
 }
 
 .nav-links a:hover, .nav-links a.active {
@@ -116,7 +118,7 @@ header {
   background: rgba(245, 158, 11, 0.08);
 }
 
-/* 2. Double-Bezel Nested Card Architecture */
+/* 2. Double-Bezel Card Architecture */
 .bezel-outer {
   background: var(--bg-card-shell);
   border: 1px solid var(--border-hairline);
@@ -124,6 +126,7 @@ header {
   padding: 6px;
   transition: all 0.3s var(--ease-fluid);
   width: 100%;
+  box-sizing: border-box;
 }
 
 .bezel-outer:hover {
@@ -136,6 +139,8 @@ header {
   border-radius: var(--radius-inner);
   padding: 1.5rem;
   height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .widget-bezel-inner {
@@ -156,6 +161,7 @@ header {
   transition: all 0.3s var(--ease-fluid);
   text-decoration: none;
   font-family: var(--font-sans);
+  white-space: nowrap;
 }
 
 .btn-nested-primary {
@@ -188,17 +194,20 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .btn-nested-outline .btn-icon-circle {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* Main Spacing */
+/* Main Layout Spacing */
 main {
   max-width: 1200px;
   margin: 3.25rem auto 3.5rem;
   padding: 0 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .hero {
@@ -206,15 +215,17 @@ main {
   padding: 2.5rem 1rem;
   max-width: 800px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .hero h1 {
-  font-size: 3.2rem;
+  font-size: clamp(1.85rem, 5vw, 3.2rem);
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.18;
   letter-spacing: -0.03em;
   margin-bottom: 1rem;
   color: #ffffff;
+  word-break: break-word;
 }
 
 .hero h1 span {
@@ -222,22 +233,27 @@ main {
 }
 
 .hero p {
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
   color: var(--text-secondary);
   margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .grid-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 1.75rem;
   align-items: start;
-}
-
-@media (max-width: 900px) {
-  .grid-2 {
-    grid-template-columns: 1fr;
-  }
+  width: 100%;
 }
 
 /* Code Container */
@@ -247,6 +263,7 @@ main {
   border-radius: var(--radius-outer);
   padding: 6px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .code-core {
@@ -255,6 +272,7 @@ main {
   border: 1px solid rgba(255, 255, 255, 0.04);
   overflow: hidden;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .code-header {
@@ -267,6 +285,8 @@ main {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--text-secondary);
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .dot-group {
@@ -282,11 +302,12 @@ main {
 pre {
   padding: 1.25rem;
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 1.5vw, 0.85rem);
   color: #e5e7eb;
   overflow-x: auto;
   line-height: 1.6;
   -webkit-overflow-scrolling: touch;
+  max-width: 100%;
 }
 
 /* 4. Pix Widget & Copia-e-Cola Alinhamento Perfeito */
@@ -298,11 +319,13 @@ pre {
   border-bottom: 1px solid var(--border-hairline);
   margin-bottom: 1rem;
   width: 100%;
+  gap: 0.5rem;
 }
 
 .widget-brand {
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  flex-shrink: 0;
 }
 
 .amount-label {
@@ -313,7 +336,7 @@ pre {
 }
 
 .amount-val {
-  font-size: 1.35rem;
+  font-size: clamp(1.1rem, 3.5vw, 1.35rem);
   font-weight: 800;
   color: var(--accent-amber);
   text-align: right;
@@ -330,6 +353,7 @@ pre {
   display: flex;
   align-items: center;
   justify-content: center;
+  max-width: 100%;
 }
 
 .qr-container img {
@@ -369,11 +393,13 @@ pre {
   margin-bottom: 1rem;
   width: 100%;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .copia-cola-input {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
+  max-width: 100%;
   background: transparent;
   border: none;
   color: var(--text-secondary);
@@ -392,7 +418,7 @@ pre {
   flex-shrink: 0;
 }
 
-/* Status Overlay em Absoluto Limpo */
+/* Status Overlay */
 .widget-status-overlay {
   position: absolute;
   inset: 0;
@@ -428,38 +454,36 @@ pre {
   margin-bottom: 0.85rem;
 }
 
-/* Bento Grid High-End */
+/* Bento Grid */
 .bento-section {
   margin-top: 5.5rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border-hairline);
+  width: 100%;
 }
 
 .bento-grid-3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.75rem;
+  width: 100%;
 }
 
-@media (max-width: 800px) {
-  .bento-grid-3 {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* 5. Dashboard Layout Limpo */
+/* Dashboard Layout */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 210px 1fr;
-  gap: 2.75rem;
+  gap: 2.5rem;
   margin-top: 1.25rem;
   padding-top: 0.5rem;
+  width: 100%;
 }
 
-@media (max-width: 850px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
+.dash-menu-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
 }
 
 .dash-menu-item {
@@ -473,6 +497,7 @@ pre {
   font-size: 0.88rem;
   transition: all 0.25s var(--ease-fluid);
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .dash-menu-item:hover, .dash-menu-item.active {
@@ -483,15 +508,10 @@ pre {
 
 .dash-stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.25rem;
   margin-bottom: 1.5rem;
-}
-
-@media (max-width: 768px) {
-  .dash-stats-grid {
-    grid-template-columns: 1fr;
-  }
+  width: 100%;
 }
 
 .stat-title {
@@ -503,6 +523,12 @@ pre {
   font-size: 1.6rem;
   font-weight: 800;
   margin-top: 0.25rem;
+}
+
+.table-responsive-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
 }
 
 .data-table {
@@ -518,12 +544,14 @@ pre {
   font-size: 0.75rem;
   letter-spacing: 0.02em;
   border-bottom: 1px solid var(--border-hairline);
+  white-space: nowrap;
 }
 
 .data-table td {
   padding: 0.85rem 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   font-size: 0.88rem;
+  white-space: nowrap;
 }
 
 .status-badge {
@@ -547,6 +575,18 @@ pre {
   color: var(--text-secondary);
 }
 
+/* ApiDocs Layout */
+.apidocs-grid {
+  display: grid;
+  grid-template-columns: 230px 1fr 380px;
+  gap: 1.25rem;
+  background: var(--bg-oled);
+  border-radius: var(--radius-outer);
+  border: 1px solid var(--border-hairline);
+  overflow: hidden;
+  width: 100%;
+}
+
 /* Toast Notifications */
 .toast-container {
   position: fixed;
@@ -556,6 +596,7 @@ pre {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
+  max-width: calc(100vw - 2rem);
 }
 
 .toast {
@@ -571,16 +612,47 @@ pre {
   font-size: 0.9rem;
 }
 
-/* Responsividade Mobile Fluida Perfeita */
-@media (max-width: 1024px) {
+/* --- Media Queries Responsivas Específicas --- */
+
+@media (max-width: 1100px) {
   .apidocs-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 210px 1fr;
+  }
+  .apidocs-playground {
+    grid-column: span 2;
+    border-left: none !important;
+    border-top: 1px solid var(--border-hairline);
+  }
+}
+
+@media (max-width: 850px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .dash-menu-container {
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dash-menu-item {
+    flex-shrink: 0;
   }
 }
 
 @media (max-width: 768px) {
+  header {
+    top: 0.5rem;
+    padding: 0 0.5rem;
+  }
+
   main {
-    margin: 2rem auto 2rem;
+    margin: 1.75rem auto 2rem;
     padding: 0 0.75rem;
   }
 
@@ -617,16 +689,6 @@ pre {
     padding: 1.5rem 0.5rem;
   }
 
-  .hero h1 {
-    font-size: 2rem;
-    line-height: 1.25;
-    word-break: break-word;
-  }
-
-  .hero p {
-    font-size: 0.95rem;
-  }
-
   .hero-buttons {
     flex-direction: column;
     width: 100%;
@@ -638,33 +700,17 @@ pre {
     min-height: 44px;
   }
 
-  .dashboard-grid {
+  .grid-2 {
     grid-template-columns: 1fr;
     gap: 1.25rem;
   }
 
-  .dash-menu-container {
-    flex-direction: row !important;
-    overflow-x: auto;
-    white-space: nowrap;
-    gap: 0.5rem;
-    padding-bottom: 0.5rem;
-    -webkit-overflow-scrolling: touch;
+  .apidocs-grid {
+    grid-template-columns: 1fr !important;
   }
 
-  .dash-menu-item {
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-
-  .table-responsive-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-  }
-
-  .data-table {
-    min-width: 580px;
+  .apidocs-playground {
+    grid-column: span 1;
   }
 
   .apidocs-sidebar, .apidocs-body, .apidocs-playground {
@@ -673,23 +719,17 @@ pre {
     border-bottom: 1px solid var(--border-hairline);
     padding: 1.25rem 1rem !important;
   }
+
+  .toast-container {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+  }
 }
 
 @media (max-width: 640px) {
   .widget-bezel-inner, .bezel-inner {
     padding: 1rem !important;
-  }
-
-  .widget-header {
-    gap: 0.5rem;
-  }
-
-  .widget-brand {
-    font-size: 1rem;
-  }
-
-  .amount-val {
-    font-size: 1.15rem;
   }
 
   .copia-cola-box {
@@ -714,10 +754,6 @@ pre {
 }
 
 @media (max-width: 480px) {
-  .hero h1 {
-    font-size: 1.7rem;
-  }
-
   .nav-links a {
     font-size: 0.72rem;
     padding: 0.25rem 0.35rem;
