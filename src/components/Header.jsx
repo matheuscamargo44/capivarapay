@@ -20,7 +20,7 @@ export function Header({ activeTab, onSelectTab }) {
               className={activeTab === 'playground' ? 'active' : ''}
               onClick={(e) => { e.preventDefault(); onSelectTab('playground'); }}
             >
-              Inicio
+              Início
             </a>
           </li>
           <li>
@@ -29,7 +29,7 @@ export function Header({ activeTab, onSelectTab }) {
               className={activeTab === 'docs' ? 'active' : ''}
               onClick={(e) => { e.preventDefault(); onSelectTab('docs'); }}
             >
-              Documentacao
+              Documentação
             </a>
           </li>
           <li>
@@ -47,7 +47,7 @@ export function Header({ activeTab, onSelectTab }) {
           className="btn-nested btn-nested-primary"
           onClick={() => onSelectTab('docs')}
         >
-          <span>Documentacao da API</span>
+          <span>Documentação da API</span>
           <div className="btn-icon-circle">
             <ArrowUpRight size={14} color="#000" />
           </div>

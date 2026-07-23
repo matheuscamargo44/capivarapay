@@ -49,9 +49,9 @@ export function EmptyState({ onAction }) {
       }}>
         <PackageOpen size={28} />
       </div>
-      <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.35rem' }}>Nenhuma transacao Pix encontrada</h4>
+      <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.35rem' }}>Nenhuma transação Pix encontrada</h4>
       <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.25rem', maxWidth: '360px' }}>
-        Voce ainda nao gerou cobrancas Pix hoje. Crie sua primeira transacao via API.
+        Você ainda não gerou cobranças Pix hoje. Crie sua primeira transação via API.
       </p>
       {onAction && (
         <button className="btn btn-pix btn-sm" onClick={onAction}>
@@ -73,9 +73,9 @@ export function ErrorState({ onRetry }) {
       justifyContent: 'center'
     }}>
       <AlertCircle size={36} style={{ color: '#ef4444', marginBottom: '0.75rem' }} />
-      <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.35rem' }}>Nao foi possivel carregar os dados</h4>
+      <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.35rem' }}>Não foi possível carregar os dados</h4>
       <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.25rem' }}>
-        Ocorreu uma falha temporaria ao conectar com a API da Capivara Pay.
+        Ocorreu uma falha temporária ao conectar com a API da Capivara Pay.
       </p>
       {onRetry && (
         <button className="btn btn-outline btn-sm" onClick={onRetry}>

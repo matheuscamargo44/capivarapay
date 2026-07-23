@@ -69,10 +69,10 @@ export function PayoutModal({ totalBalance }) {
               </button>
 
               <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-                Saque instantaneo via Pix
+                Saque instantâneo via Pix
               </h3>
               <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
-                Transfira seu saldo disponivel diretamente para sua conta bancaria.
+                Transfira seu saldo disponível diretamente para sua conta bancária.
               </p>
 
               {success ? (
@@ -89,7 +89,7 @@ export function PayoutModal({ totalBalance }) {
                       type="text" 
                       value={pixKey} 
                       onChange={e => setPixKey(e.target.value)}
-                      placeholder="CPF, CNPJ, Email ou Chave Aleatoria"
+                      placeholder="CPF, CNPJ, Email ou Chave Aleatória"
                       required
                       style={{
                         width: '100%',

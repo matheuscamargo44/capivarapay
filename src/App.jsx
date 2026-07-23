@@ -39,12 +39,12 @@ export default function App() {
                 O gateway Pix <span>para desenvolvedores</span>
               </h1>
               <p>
-                Integre pagamentos Pix no seu site ou SaaS em 2 linhas de codigo com confirmacao via webhook em tempo real.
+                Integre pagamentos Pix no seu site ou SaaS em 2 linhas de código com confirmação via webhook em tempo real.
               </p>
 
               <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '3rem' }}>
                 <button className="btn-nested btn-nested-primary" onClick={() => setActiveTab('docs')}>
-                  <span>Ver documentacao</span>
+                  <span>Ver documentação</span>
                   <div className="btn-icon-circle">
                     <BookOpen size={14} color="#000" />
                   </div>

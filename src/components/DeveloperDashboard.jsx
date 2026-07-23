@@ -40,7 +40,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
           <div className="dash-menu-item active">
-            <PieChart size={18} /> Visao geral
+            <PieChart size={18} /> Visão geral
           </div>
           <div className="dash-menu-item">
             <Receipt size={18} /> Vendas Pix
@@ -52,7 +52,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
             <Radio size={18} /> Webhooks
           </div>
           <div className="dash-menu-item">
-            <Settings size={18} /> Configuracoes
+            <Settings size={18} /> Configurações
           </div>
         </div>
 
@@ -81,7 +81,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
 
             <div className="bezel-outer">
               <div className="bezel-inner" style={{ padding: '1.25rem 1.4rem' }}>
-                <div className="stat-title">Taxa de conversao</div>
+                <div className="stat-title">Taxa de conversão</div>
                 <div className="stat-val" style={{ color: 'var(--accent-amber)' }}>98.4%</div>
               </div>
             </div>
@@ -91,7 +91,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
             <div className="bezel-inner" style={{ padding: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>
-                  Ultimas transacoes Pix
+                  Últimas transações Pix
                 </h3>
 
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>

@@ -27,9 +27,9 @@ export function BentoFeatures({ onSelectDocs }) {
             }}>
               <Zap size={20} />
             </div>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem' }}>Confirmacao em menos de 800ms</h3>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem' }}>Confirmação em menos de 800ms</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6 }}>
-              Webhooks assincronos de alta disponibilidade com resiliencia de entrega e retry automatico.
+              Webhooks assíncronos de alta disponibilidade com resiliência de entrega e retry automático.
             </p>
           </div>
         </div>
@@ -50,9 +50,9 @@ export function BentoFeatures({ onSelectDocs }) {
             }}>
               <ShieldCheck size={20} />
             </div>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem' }}>Seguranca HMAC SHA-256</h3>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem' }}>Segurança HMAC SHA-256</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6 }}>
-              Assinatura criptografica X-Capivara-Signature em cada evento para protecao anti-spoofing.
+              Assinatura criptográfica X-Capivara-Signature em cada evento para proteção anti-spoofing.
             </p>
           </div>
         </div>
@@ -73,9 +73,9 @@ export function BentoFeatures({ onSelectDocs }) {
             }}>
               <Cpu size={20} />
             </div>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem' }}>Idempotencia nativa</h3>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem' }}>Idempotência nativa</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6 }}>
-              Garantia de transacao unica por correlation_id evitando duplicacao em falhas de rede.
+              Garantia de transação única por correlation_id evitando duplicação em falhas de rede.
             </p>
           </div>
         </div>
