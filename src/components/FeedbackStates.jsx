@@ -54,8 +54,8 @@ export function EmptyState({ onAction }) {
         Você ainda não gerou cobranças Pix hoje. Crie sua primeira transação via API.
       </p>
       {onAction && (
-        <button className="btn btn-pix btn-sm" onClick={onAction}>
-          Atualizar lista
+        <button className="btn-nested btn-nested-primary" onClick={onAction} style={{ minHeight: '40px' }}>
+          <span>Atualizar lista</span>
         </button>
       )}
     </div>
@@ -78,8 +78,8 @@ export function ErrorState({ onRetry }) {
         Ocorreu uma falha temporária ao conectar com a API da Capivara Pay.
       </p>
       {onRetry && (
-        <button className="btn btn-outline btn-sm" onClick={onRetry}>
-          <RefreshCw size={14} /> Tentar novamente
+        <button className="btn-nested btn-nested-outline" onClick={onRetry} style={{ minHeight: '40px' }}>
+          <RefreshCw size={14} /> <span>Tentar novamente</span>
         </button>
       )}
     </div>

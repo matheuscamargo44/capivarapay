@@ -100,6 +100,9 @@ header {
   gap: 1.25rem;
   align-items: center;
   list-style: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: center;
 }
 
 .nav-links a {
@@ -477,6 +480,7 @@ pre {
   margin-top: 1.25rem;
   padding-top: 0.5rem;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .dash-menu-container {
@@ -675,6 +679,7 @@ pre {
     -webkit-overflow-scrolling: touch;
     flex: 1 1 auto;
     min-width: 0;
+    justify-content: flex-start;
   }
 
   .nav-links::-webkit-scrollbar {
@@ -732,6 +737,33 @@ pre {
     padding: 1.25rem 1rem !important;
   }
 
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .dashboard-outer {
+    padding: 1.25rem 1rem;
+  }
+
+  .dash-menu-container {
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.5rem;
+  }
+
+  .dash-menu-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dash-menu-item {
+    flex-shrink: 0;
+  }
+
   .toast-container {
     bottom: 1rem;
     right: 1rem;
@@ -769,5 +801,38 @@ pre {
   .nav-links a {
     font-size: 0.72rem;
     padding: 0.25rem 0.35rem;
+  }
+
+  .floating-nav .btn-nested .btn-icon-circle {
+    display: flex;
+  }
+
+  .bento-section {
+    margin-top: 3rem;
+  }
+
+  main {
+    padding: 0 0.5rem;
+  }
+
+  .bezel-inner {
+    padding: 1rem !important;
+  }
+
+  .dashboard-grid {
+    padding: 0;
+  }
+
+  .dashboard-outer {
+    padding: 1rem 0.75rem;
+    border-radius: var(--radius-inner);
+  }
+
+  .stat-val {
+    font-size: 1.3rem;
+  }
+
+  .dash-stats-grid {
+    grid-template-columns: 1fr;
   }
 }

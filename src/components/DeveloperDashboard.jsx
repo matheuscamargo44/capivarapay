@@ -29,7 +29,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
   });
 
   return (
-    <div style={{
+    <div className="dashboard-outer" style={{
       background: 'var(--bg-oled)',
       borderRadius: 'var(--radius-outer)',
       border: '1px solid var(--border-hairline)',
@@ -38,7 +38,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
     }}>
       <div className="dashboard-grid" style={{ marginTop: 0, paddingTop: 0 }}>
 
-        <div className="dash-menu-container" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+        <div className="dash-menu-container">
           <div className="dash-menu-item active">
             <PieChart size={18} /> Visão geral
           </div>
@@ -57,7 +57,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
         </div>
 
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>Resumo financeiro</h2>
             <PayoutModal totalBalance={totalVolume} />
           </div>
@@ -94,7 +94,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
                   Últimas transações Pix
                 </h3>
 
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', background: 'rgba(0,0,0,0.4)', padding: '3px', borderRadius: 'var(--radius-pill)', border: '1px solid var(--border-hairline)' }}>
                     {['ALL', 'PAID', 'PENDING'].map(f => (
                       <button

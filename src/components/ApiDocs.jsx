@@ -95,9 +95,6 @@ function Checkout() {
 
   return (
     <div className="apidocs-grid" style={{
-      display: 'grid',
-      gridTemplateColumns: '230px 1fr 380px',
-      gap: '1.25rem',
       background: 'var(--bg-oled)',
       borderRadius: 'var(--radius-outer)',
       border: '1px solid var(--border-hairline)',
