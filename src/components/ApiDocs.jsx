@@ -137,7 +137,7 @@ function Checkout() {
         </div>
 
         {/* Menu Navigation Items */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+        <div className="apidocs-menu-container" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.4rem 0.5rem' }}>
             Visão geral
           </div>

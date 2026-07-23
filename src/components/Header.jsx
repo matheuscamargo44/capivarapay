@@ -44,7 +44,7 @@ export function Header({ activeTab, onSelectTab }) {
         </ul>
 
         <button
-          className="btn-nested btn-nested-primary"
+          className="btn-nested btn-nested-primary header-cta-btn"
           onClick={() => onSelectTab('docs')}
         >
           <span>Documentação da API</span>
