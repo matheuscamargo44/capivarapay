@@ -13,13 +13,13 @@ export function PixWidget({ amount = 29.90 }) {
 
   return (
     <div className="bezel-outer">
-      <div className="bezel-inner" style={{ padding: '1.5rem', position: 'relative' }}>
+      <div className="bezel-inner widget-bezel-inner" style={{ position: 'relative' }}>
 
         <div className="widget-header">
           <div className="widget-brand">
             <span style={{ color: 'var(--accent-amber)' }}>Capivara<span style={{ color: '#ffffff' }}>Pay</span></span>
           </div>
-          <div>
+          <div style={{ textAlign: 'right', minWidth: 0 }}>
             <div className="amount-label">Valor a pagar</div>
             <div className="amount-val">R$ {amount.toFixed(2).replace('.', ',')}</div>
           </div>
@@ -43,9 +43,9 @@ export function PixWidget({ amount = 29.90 }) {
             value={pixPayload}
             className="copia-cola-input"
           />
-          <button className="btn-nested btn-nested-primary" onClick={handleCopy} style={{ padding: '0.35rem 0.75rem', fontSize: '0.78rem' }}>
+          <button className="btn-nested btn-nested-primary btn-copy-action" onClick={handleCopy}>
             <span>{copied ? 'Copiado' : 'Copiar'}</span>
-            <div className="btn-icon-circle" style={{ width: '22px', height: '22px' }}>
+            <div className="btn-icon-circle" style={{ width: '22px', height: '22px', flexShrink: 0 }}>
               {copied ? <Check size={12} color="#000" /> : <Copy size={12} color="#000" />}
             </div>
           </button>
