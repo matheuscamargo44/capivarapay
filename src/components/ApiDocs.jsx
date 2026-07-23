@@ -94,7 +94,7 @@ function Checkout() {
   };
 
   return (
-    <div style={{
+    <div className="apidocs-grid" style={{
       display: 'grid',
       gridTemplateColumns: '230px 1fr 380px',
       gap: '1.25rem',
@@ -105,7 +105,7 @@ function Checkout() {
     }}>
       
       {/* 1. LEFT SIDEBAR: NAVEGAÇÃO DA DOCUMENTAÇÃO */}
-      <div style={{
+      <div className="apidocs-sidebar" style={{
         background: '#080a0e',
         borderRight: '1px solid var(--border-hairline)',
         padding: '1.5rem 1rem',
@@ -144,10 +144,10 @@ function Checkout() {
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.4rem 0.5rem' }}>
             Visão geral
           </div>
-          <div class="dash-menu-item">
+          <div className="dash-menu-item">
             <BookOpen size={16} /> Introdução
           </div>
-          <div class="dash-menu-item">
+          <div className="dash-menu-item">
             <Key size={16} /> Autenticação e chaves
           </div>
 
@@ -155,7 +155,7 @@ function Checkout() {
             Endpoints Pix
           </div>
           <div 
-            class={`dash-menu-item ${activeEndpoint === 'create_charge' ? 'active' : ''}`}
+            className={`dash-menu-item ${activeEndpoint === 'create_charge' ? 'active' : ''}`}
             onClick={() => setActiveEndpoint('create_charge')}
           >
             <span style={{ 
@@ -171,7 +171,7 @@ function Checkout() {
             <span>Criar cobrança Pix</span>
           </div>
 
-          <div class="dash-menu-item">
+          <div className="dash-menu-item">
             <span style={{ 
               fontSize: '0.68rem', 
               fontWeight: 800, 
@@ -188,10 +188,10 @@ function Checkout() {
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.8rem 0.5rem 0.4rem' }}>
             Eventos assíncronos
           </div>
-          <div class="dash-menu-item">
+          <div className="dash-menu-item">
             <Radio size={16} /> Webhooks e HMAC
           </div>
-          <div class="dash-menu-item">
+          <div className="dash-menu-item">
             <Server size={16} /> Status dos serviços
           </div>
         </div>
@@ -199,7 +199,7 @@ function Checkout() {
       </div>
 
       {/* 2. MIDDLE COLUMN: DESCRIÇÃO E PARÂMETROS DO ENDPOINT */}
-      <div style={{ padding: '2rem 1.5rem', overflowY: 'auto' }}>
+      <div className="apidocs-body" style={{ padding: '2rem 1.5rem', overflowY: 'auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.75rem' }}>
           <span style={{
             background: 'var(--accent-amber)',
@@ -226,14 +226,14 @@ function Checkout() {
         {/* Parameters Section */}
         <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span>Request Body</span>
-          <span class="eyebrow-badge" style={{ margin: 0 }}>application/json</span>
+          <span className="eyebrow-badge" style={{ margin: 0 }}>application/json</span>
         </h3>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
           
           {/* Parameter 1 */}
-          <div class="bezel-outer">
-            <div class="bezel-inner" style={{ padding: '1rem' }}>
+          <div className="bezel-outer">
+            <div className="bezel-inner" style={{ padding: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
                 <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent-amber)' }}>amount</span>
                 <span style={{ fontSize: '0.75rem', color: '#ef4444', fontWeight: 700 }}>Obrigatório</span>
@@ -246,8 +246,8 @@ function Checkout() {
           </div>
 
           {/* Parameter 2 */}
-          <div class="bezel-outer">
-            <div class="bezel-inner" style={{ padding: '1rem' }}>
+          <div className="bezel-outer">
+            <div className="bezel-inner" style={{ padding: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
                 <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--text-primary)' }}>description</span>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Opcional</span>
@@ -260,8 +260,8 @@ function Checkout() {
           </div>
 
           {/* Parameter 3 */}
-          <div class="bezel-outer">
-            <div class="bezel-inner" style={{ padding: '1rem' }}>
+          <div className="bezel-outer">
+            <div className="bezel-inner" style={{ padding: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
                 <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--text-primary)' }}>correlation_id</span>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Opcional</span>
@@ -277,7 +277,7 @@ function Checkout() {
       </div>
 
       {/* 3. RIGHT COLUMN: PLAYGROUND DE CÓDIGO E RESPOSTA AO VIVO */}
-      <div style={{
+      <div className="apidocs-playground" style={{
         background: '#07080c',
         borderLeft: '1px solid var(--border-hairline)',
         padding: '1.5rem',
@@ -316,9 +316,9 @@ function Checkout() {
         </div>
 
         {/* Code Terminal */}
-        <div class="code-shell">
-          <div class="code-core">
-            <div class="code-header">
+        <div className="code-shell">
+          <div className="code-core">
+            <div className="code-header">
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Terminal size={14} color="var(--accent-amber)" /> Payload da requisição
               </span>
@@ -337,22 +337,22 @@ function Checkout() {
 
         {/* Live Execution Button */}
         <button 
-          class="btn-nested btn-nested-primary" 
+          className="btn-nested btn-nested-primary" 
           onClick={handleExecuteRequest}
           disabled={isExecuting}
           style={{ width: '100%', justifyContent: 'center' }}
         >
           <span>{isExecuting ? 'Executando...' : 'Executar requisição ao vivo'}</span>
-          <div class="btn-icon-circle">
+          <div className="btn-icon-circle">
             <Play size={14} color="#000" />
           </div>
         </button>
 
         {/* Response Inspector */}
         {apiResponse && (
-          <div class="code-shell">
-            <div class="code-core" style={{ borderLeft: '3px solid #10b981' }}>
-              <div class="code-header">
+          <div className="code-shell">
+            <div className="code-core" style={{ borderLeft: '3px solid #10b981' }}>
+              <div className="code-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span style={{ background: 'rgba(16,185,129,0.2)', color: '#10b981', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', fontSize: '0.75rem' }}>
                     ● {apiResponse.status} {apiResponse.statusText}

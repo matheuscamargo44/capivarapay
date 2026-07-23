@@ -38,7 +38,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
     }}>
       <div className="dashboard-grid" style={{ marginTop: 0, paddingTop: 0 }}>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+        <div className="dash-menu-container" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
           <div className="dash-menu-item active">
             <PieChart size={18} /> Visão geral
           </div>
@@ -57,7 +57,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
         </div>
 
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>Resumo financeiro</h2>
             <PayoutModal totalBalance={totalVolume} />
           </div>
@@ -89,7 +89,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
 
           <div className="bezel-outer">
             <div className="bezel-inner" style={{ padding: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>
                   Últimas transações Pix
                 </h3>
@@ -129,34 +129,36 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
               ) : filteredTransactions.length === 0 ? (
                 <EmptyState onAction={handleRefresh} />
               ) : (
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>TXID</th>
-                      <th>Cliente</th>
-                      <th>Valor</th>
-                      <th>Status</th>
-                      <th>Data/Hora</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTransactions.map(tx => (
-                      <tr key={tx.id}>
-                        <td style={{ fontFamily: 'var(--font-mono)' }}>{tx.id}</td>
-                        <td>{tx.customer?.email || tx.email}</td>
-                        <td><strong>R$ {tx.amount.toFixed(2).replace('.', ',')}</strong></td>
-                        <td>
-                          {tx.status === 'PAID' ? (
-                            <span className="status-badge paid"><Check size={12} /> Pago</span>
-                          ) : (
-                            <span className="status-badge pending"><Clock size={12} /> Pendente</span>
-                          )}
-                        </td>
-                        <td style={{ color: 'var(--text-muted)' }}>{tx.time || tx.created_at || ''}</td>
+                <div className="table-responsive-wrapper">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>TXID</th>
+                        <th>Cliente</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                        <th>Data/Hora</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {filteredTransactions.map(tx => (
+                        <tr key={tx.id}>
+                          <td style={{ fontFamily: 'var(--font-mono)' }}>{tx.id}</td>
+                          <td>{tx.customer?.email || tx.email}</td>
+                          <td><strong>R$ {tx.amount.toFixed(2).replace('.', ',')}</strong></td>
+                          <td>
+                            {tx.status === 'PAID' ? (
+                              <span className="status-badge paid"><Check size={12} /> Pago</span>
+                            ) : (
+                              <span className="status-badge pending"><Clock size={12} /> Pendente</span>
+                            )}
+                          </td>
+                          <td style={{ color: 'var(--text-muted)' }}>{tx.time || tx.created_at || ''}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
           </div>

@@ -42,7 +42,7 @@ export default function App() {
                 Integre pagamentos Pix no seu site ou SaaS em 2 linhas de código com confirmação via webhook em tempo real.
               </p>
 
-              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '3rem' }}>
+              <div className="hero-buttons" style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '3rem' }}>
                 <button className="btn-nested btn-nested-primary" onClick={() => setActiveTab('docs')}>
                   <span>Ver documentação</span>
                   <div className="btn-icon-circle">
