@@ -7,7 +7,7 @@ export function CodePlayground() {
 
   const rawCode = `import { CapivaraPay } from '@capivarapay/sdk';
 
-const capivara = new CapivaraPay('cap_live_sec_88f912a');
+const capivara = new CapivaraPay('cap_test_demo_key');
 
 const charge = await capivara.pix.create({
   amount: 29.90,

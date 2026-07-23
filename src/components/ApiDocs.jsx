@@ -16,7 +16,7 @@ export function ApiDocs({ onShowToast }) {
   // High-End Code Snippets por Linguagem
   const codeSnippets = {
     curl: `curl -X POST https://api.capivarapay.com/v2/charges/pix \\
-  -H "Authorization: Bearer cap_test_98fa7d12x" \\
+  -H "Authorization: Bearer cap_test_demo_key" \\
   -H "Content-Type: application/json" \\
   -d '{
     "amount": 29.90,
@@ -25,7 +25,7 @@ export function ApiDocs({ onShowToast }) {
   }'`,
     node: `import { CapivaraPay } from '@capivarapay/sdk';
 
-const capivara = new CapivaraPay('cap_test_98fa7d12x');
+const capivara = new CapivaraPay('cap_test_demo_key');
 
 const charge = await capivara.pix.create({
   amount: 29.90,
@@ -34,7 +34,7 @@ const charge = await capivara.pix.create({
 });`,
     python: `from capivarapay import CapivaraPay
 
-client = CapivaraPay(api_key="cap_test_98fa7d12x")
+client = CapivaraPay(api_key="cap_test_demo_key")
 
 charge = client.pix.create(
     amount=29.90,

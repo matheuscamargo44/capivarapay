@@ -1,8 +1,8 @@
-const API_BASE_URL = '/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://34.229.245.95:5000/api/v1';
 
 class ApiClient {
   constructor() {
-    this.apiKey = 'cap_live_sec_88f912a';
+    this.apiKey = 'cap_test_demo_key';
   }
 
   async request(endpoint, options = {}) {
