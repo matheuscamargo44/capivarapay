@@ -49,9 +49,9 @@ export function EmptyState({ onAction }) {
       }}>
         <PackageOpen size={28} />
       </div>
-      <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.35rem' }}>Nenhuma transação Pix encontrada</h4>
+      <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.35rem' }}>Nenhuma transação encontrada</h4>
       <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.25rem', maxWidth: '360px' }}>
-        Você ainda não gerou cobranças Pix hoje. Crie sua primeira transação via API.
+        Você ainda não gerou cobranças hoje. Crie sua primeira transação via API.
       </p>
       {onAction && (
         <button className="btn-nested btn-nested-primary" onClick={onAction} style={{ minHeight: '40px' }}>

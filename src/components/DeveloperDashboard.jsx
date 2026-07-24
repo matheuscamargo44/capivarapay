@@ -97,7 +97,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
             onClick={() => setActiveTab('sales')}
             style={{ border: 'none', background: 'transparent', textAlign: 'left', width: '100%', cursor: 'pointer' }}
           >
-            <Receipt size={18} aria-hidden="true" /> Vendas Pix
+            <Receipt size={18} aria-hidden="true" /> Vendas
           </button>
           
           <button 
@@ -180,7 +180,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
                 <div className="bezel-inner" style={{ padding: '1.5rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                     <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>
-                      Últimas transações Pix
+                      Últimas transações
                     </h3>
 
                     <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -226,7 +226,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
                     <EmptyState onAction={handleRefresh} />
                   ) : (
                     <div className="table-responsive-wrapper">
-                      <table className="data-table" aria-label="Tabela de transações Pix">
+                      <table className="data-table" aria-label="Tabela de transações">
                         <thead>
                           <tr>
                             <th scope="col">TXID</th>
