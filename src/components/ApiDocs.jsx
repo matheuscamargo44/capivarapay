@@ -563,7 +563,7 @@ function ChargeStatus({ id }) {
         {/* Response Inspector */}
         {apiResponse && (
           <div className="code-shell">
-            <div className="code-core" style={{ borderLeft: '3px solid #10b981' }}>
+            <div className="code-core">
               <div className="code-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span style={{ background: 'rgba(16,185,129,0.2)', color: '#10b981', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', fontSize: '0.75rem' }}>
