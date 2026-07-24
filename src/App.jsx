@@ -48,16 +48,16 @@ export default function App() {
                 </p>
 
                 <div className="hero-buttons">
-                  <button className="btn-ds btn-ds-primary" onClick={() => setActiveTab('docs')}>
+                  <button className="btn-nested btn-nested-primary" onClick={() => setActiveTab('docs')}>
                     <span>Ver documentação</span>
                     <div className="btn-icon-circle">
                       <BookOpen size={14} color="#000" />
                     </div>
                   </button>
-                  <button className="btn-ds btn-ds-outline" onClick={() => setActiveTab('dashboard')}>
+                  <button className="btn-nested btn-nested-outline" onClick={() => setActiveTab('dashboard')}>
                     <span>Abrir dashboard</span>
                     <div className="btn-icon-circle">
-                      <ArrowRight size={14} />
+                      <ArrowRight size={14} color="var(--text-primary)" />
                     </div>
                   </button>
                 </div>

@@ -412,40 +412,42 @@ header {
   padding: 1.5rem;
 }
 
-/* 3. Button-in-Button CTA */
-.btn-nested {
+/* 3. Button-in-Button CTA Architecture */
+.btn-nested, .btn-ds {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.65rem;
-  padding: 0.55rem 1.25rem;
+  padding: 0.65rem 1.35rem;
   font-size: 0.88rem;
   font-weight: 700;
   border-radius: var(--radius-pill);
   cursor: pointer;
   border: none;
-  transition: all 0.3s var(--ease-fluid);
+  transition: all 0.25s var(--ease-fluid);
   text-decoration: none;
   font-family: var(--font-sans);
   white-space: nowrap;
+  box-sizing: border-box;
 }
 
-.btn-nested-primary {
+.btn-nested-primary, .btn-ds-primary {
   background: var(--accent-amber);
   color: #000000;
 }
 
-.btn-nested-primary:hover {
+.btn-nested-primary:hover, .btn-ds-primary:hover {
   background: var(--accent-gold);
   transform: translateY(-1px);
 }
 
-.btn-nested-outline {
+.btn-nested-outline, .btn-ds-outline {
   background: transparent;
   color: var(--text-primary);
   border: 1px solid var(--border-hairline);
 }
 
-.btn-nested-outline:hover {
+.btn-nested-outline:hover, .btn-ds-outline:hover {
   border-color: var(--border-accent);
   color: var(--accent-amber);
   background: rgba(245, 158, 11, 0.05);
@@ -462,7 +464,7 @@ header {
   flex-shrink: 0;
 }
 
-.btn-nested-outline .btn-icon-circle {
+.btn-nested-outline .btn-icon-circle, .btn-ds-outline .btn-icon-circle {
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -481,6 +483,7 @@ main {
   max-width: 800px;
   margin: 0 auto;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .hero h1 {
@@ -508,9 +511,18 @@ main {
   display: flex;
   gap: 1rem;
   justify-content: center;
+  align-items: center;
   margin-bottom: 2.5rem;
   flex-wrap: wrap;
   width: 100%;
+}
+
+.bento-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .grid-2 {
@@ -519,6 +531,7 @@ main {
   gap: 1.75rem;
   align-items: start;
   width: 100%;
+  box-sizing: border-box;
 }
 
 /* Code Container */
