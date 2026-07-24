@@ -36,7 +36,7 @@ jobs:
       - name: Invalidate CloudFront Cache
         continue-on-error: true
         run: |
-          aws cloudfront create-invalidation --distribution-id EG3GISBLMK7LO --paths "/*"
+          aws cloudfront create-invalidation --distribution-id EG3GISBLMK7LO --paths "/*" --region us-east-1
 
   deploy-backend:
     runs-on: ubuntu-latest
