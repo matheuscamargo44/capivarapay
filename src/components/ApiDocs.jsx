@@ -13,12 +13,12 @@ export function ApiDocs({ onShowToast }) {
   const [apiResponse, setApiResponse] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
 
-  // Definição dos Endpoints e Referências da API
+  // Definição dos Endpoints reais da API v1
   const endpointsData = {
     create_charge: {
       id: 'create_charge',
       method: 'POST',
-      path: '/v2/charges/pix',
+      path: '/v1/charges',
       title: 'Criar cobrança',
       description: 'Gera uma nova cobrança Pix instantânea com suporte a QR Code dinâmico, código copia e cola e disparo de webhook assíncrono.',
       bodyLabel: 'Corpo da requisição',
@@ -29,7 +29,7 @@ export function ApiDocs({ onShowToast }) {
         { name: 'correlation_id', type: 'string (Idempotência)', required: false, desc: 'Identificador único de pedido do seu sistema para evitar duplicidade de pagamentos.' }
       ],
       codeSnippets: {
-        curl: `curl -X POST https://api.capivarapay.com/v2/charges/pix \\
+        curl: `curl -X POST https://api.capivarapay.com/api/v1/charges \\
   -H "Authorization: Bearer cap_test_demo_key" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -68,7 +68,7 @@ function Checkout() {
     list_charges: {
       id: 'list_charges',
       method: 'GET',
-      path: '/v2/charges',
+      path: '/v1/charges',
       title: 'Listar cobranças',
       description: 'Retorna uma lista com todas as cobranças geradas ordenadas por data de criação.',
       bodyLabel: 'Parâmetros de consulta',
@@ -78,7 +78,7 @@ function Checkout() {
         { name: 'limit', type: 'integer', required: false, desc: 'Número máximo de registros a retornar (padrão: 50).' }
       ],
       codeSnippets: {
-        curl: `curl -X GET https://api.capivarapay.com/v2/charges \\
+        curl: `curl -X GET https://api.capivarapay.com/api/v1/charges \\
   -H "Authorization: Bearer cap_test_demo_key"`,
         node: `import { CapivaraPay } from '@capivarapay/sdk';
 
@@ -91,15 +91,57 @@ charges = client.pix.list()`,
         react: `import { usePixHistory } from '@capivarapay/react';
 
 function History() {
-  const { charges, loading } = usePixHistory();
+  const { charges } = usePixHistory();
   return <div>Total: {charges.length}</div>;
 }`
+      }
+    },
+    get_charge: {
+      id: 'get_charge',
+      method: 'GET',
+      path: '/v1/charges/:id',
+      title: 'Buscar cobrança por ID',
+      description: 'Retorna os detalhes completos e o status atualizado de uma cobrança específica.',
+      bodyLabel: 'Parâmetros de rota',
+      contentType: 'URL Path',
+      params: [
+        { name: 'id', type: 'string', required: true, desc: 'Identificador único da cobrança (ex: tx_cap_8f912a).' }
+      ],
+      codeSnippets: {
+        curl: `curl -X GET https://api.capivarapay.com/api/v1/charges/tx_cap_8f912a \\
+  -H "Authorization: Bearer cap_test_demo_key"`,
+        node: `const charge = await capivara.pix.get('tx_cap_8f912a');`,
+        python: `charge = client.pix.get('tx_cap_8f912a')`,
+        react: `// Buscar detalhes da cobrança`
+      }
+    },
+    pay_charge: {
+      id: 'pay_charge',
+      method: 'POST',
+      path: '/v1/charges/:id/pay',
+      title: 'Simular pagamento Pix',
+      description: 'Altera o status da cobrança para PAID e simula o disparo de webhook assíncrono.',
+      bodyLabel: 'Corpo da requisição',
+      contentType: 'application/json',
+      params: [
+        { name: 'webhook_url', type: 'string', required: false, desc: 'URL opcional para disparo de teste do evento pix.payment.succeeded.' }
+      ],
+      codeSnippets: {
+        curl: `curl -X POST https://api.capivarapay.com/api/v1/charges/tx_cap_8f912a/pay \\
+  -H "Authorization: Bearer cap_test_demo_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "webhook_url": "https://meusite.com/api/webhooks/pix"
+  }'`,
+        node: `const result = await capivara.pix.markAsPaid('tx_cap_8f912a');`,
+        python: `result = client.pix.mark_as_paid('tx_cap_8f912a')`,
+        react: `// Simulação de pagamento`
       }
     },
     create_payout: {
       id: 'create_payout',
       method: 'POST',
-      path: '/v2/payouts',
+      path: '/v1/payouts',
       title: 'Solicitar saque Pix',
       description: 'Realiza uma transferência Pix de saída para a chave financeira de destino informada.',
       bodyLabel: 'Corpo da requisição',
@@ -110,7 +152,7 @@ function History() {
         { name: 'pix_key_type', type: 'string', required: false, desc: 'Tipo da chave Pix. Exemplo: CPF.' }
       ],
       codeSnippets: {
-        curl: `curl -X POST https://api.capivarapay.com/v2/payouts \\
+        curl: `curl -X POST https://api.capivarapay.com/api/v1/payouts \\
   -H "Authorization: Bearer cap_live_8f2a91b4" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -118,40 +160,59 @@ function History() {
     "pix_key": "12345678900",
     "pix_key_type": "CPF"
   }'`,
-        node: `import { CapivaraPay } from '@capivarapay/sdk';
-
-const capivara = new CapivaraPay('cap_live_8f2a91b4');
-const payout = await capivara.payouts.create({
+        node: `const payout = await capivara.payouts.create({
   amount: 150.00,
   pix_key: '12345678900',
   pix_key_type: 'CPF'
 });`,
-        python: `from capivarapay import CapivaraPay
-
-client = CapivaraPay(api_key="cap_live_8f2a91b4")
-payout = client.payouts.create(
+        python: `payout = client.payouts.create(
     amount=150.00,
     pix_key="12345678900",
     pix_key_type="CPF"
 )`,
-        react: `// Exemplo de integração de saque`
+        react: `// Solicitação de saque`
       }
     },
     list_keys: {
       id: 'list_keys',
       method: 'GET',
-      path: '/v2/keys',
+      path: '/v1/keys',
       title: 'Listar chaves de API',
       description: 'Retorna a lista de chaves secretas de produção e homologação cadastradas.',
       bodyLabel: 'Parâmetros',
       contentType: 'Nenhum',
       params: [],
       codeSnippets: {
-        curl: `curl -X GET https://api.capivarapay.com/v2/keys \\
+        curl: `curl -X GET https://api.capivarapay.com/api/v1/keys \\
   -H "Authorization: Bearer cap_live_8f2a91b4"`,
         node: `const keys = await capivara.keys.list();`,
         python: `keys = client.keys.list()`,
-        react: `// Exemplo de listagem`
+        react: `// Listagem de chaves`
+      }
+    },
+    create_key: {
+      id: 'create_key',
+      method: 'POST',
+      path: '/v1/keys',
+      title: 'Gerar nova chave de API',
+      description: 'Cria uma nova chave secreta nos ambientes de Produção (cap_live_...) ou Teste (cap_test_...).',
+      bodyLabel: 'Corpo da requisição',
+      contentType: 'application/json',
+      params: [
+        { name: 'name', type: 'string', required: false, desc: 'Identificação amigável da chave.' },
+        { name: 'type', type: 'string (LIVE ou TEST)', required: false, desc: 'Tipo do ambiente. Exemplo: LIVE.' }
+      ],
+      codeSnippets: {
+        curl: `curl -X POST https://api.capivarapay.com/api/v1/keys \\
+  -H "Authorization: Bearer cap_live_8f2a91b4" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "Nova Chave Produção",
+    "type": "LIVE"
+  }'`,
+        node: `const newKey = await capivara.keys.create({ name: 'Nova Chave', type: 'LIVE' });`,
+        python: `new_key = client.keys.create(name='Nova Chave', type='LIVE')`,
+        react: `// Geração de chave`
       }
     },
     health: {
@@ -164,7 +225,7 @@ payout = client.payouts.create(
       contentType: 'Nenhum',
       params: [],
       codeSnippets: {
-        curl: `curl -X GET https://api.capivarapay.com/v1/health`,
+        curl: `curl -X GET https://api.capivarapay.com/api/v1/health`,
         node: `const status = await capivara.health();`,
         python: `status = client.health()`,
         react: `// Status do gateway`
@@ -183,7 +244,7 @@ payout = client.payouts.create(
           description: 'Demonstração ao Vivo - ApiDocs',
           correlation_id: `corr_docs_${Date.now()}`
         });
-        setApiResponse({ status: 200, statusText: 'OK', timeMs: Math.floor(Math.random() * 30 + 15), data });
+        setApiResponse({ status: 201, statusText: 'CREATED', timeMs: Math.floor(Math.random() * 30 + 15), data });
       } else if (currentEndpoint.id === 'list_charges') {
         const data = await apiClient.listCharges();
         setApiResponse({ status: 200, statusText: 'OK', timeMs: 22, data });
@@ -248,7 +309,7 @@ payout = client.payouts.create(
           <Search size={14} color="var(--text-muted)" />
           <input 
             type="text" 
-            placeholder="Buscar endpoints..." 
+            placeholder="Buscar endpoints v1..." 
             style={{
               background: 'transparent',
               border: 'none',
@@ -262,13 +323,7 @@ payout = client.payouts.create(
 
         <div className="apidocs-menu-container" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.4rem 0.5rem' }}>
-            Visão geral
-          </div>
-          <div className="dash-menu-item"><BookOpen size={16} /> Introdução</div>
-          <div className="dash-menu-item"><Key size={16} /> Autenticação e chaves</div>
-
-          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.8rem 0.5rem 0.4rem' }}>
-            Endpoints Pix
+            Cobranças Pix (API v1)
           </div>
           
           <div 
@@ -292,6 +347,30 @@ payout = client.payouts.create(
           </div>
 
           <div 
+            className={`dash-menu-item ${activeEndpointId === 'get_charge' ? 'active' : ''}`}
+            onClick={() => { setActiveEndpointId('get_charge'); setApiResponse(null); }}
+          >
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-secondary)', padding: '2px 6px', borderRadius: '4px' }}>
+              GET
+            </span>
+            <span>Buscar por ID</span>
+          </div>
+
+          <div 
+            className={`dash-menu-item ${activeEndpointId === 'pay_charge' ? 'active' : ''}`}
+            onClick={() => { setActiveEndpointId('pay_charge'); setApiResponse(null); }}
+          >
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(245, 158, 11, 0.2)', color: 'var(--accent-amber)', padding: '2px 6px', borderRadius: '4px' }}>
+              POST
+            </span>
+            <span>Simular pagamento</span>
+          </div>
+
+          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.8rem 0.5rem 0.4rem' }}>
+            Saques e Chaves (API v1)
+          </div>
+
+          <div 
             className={`dash-menu-item ${activeEndpointId === 'create_payout' ? 'active' : ''}`}
             onClick={() => { setActiveEndpointId('create_payout'); setApiResponse(null); }}
           >
@@ -311,10 +390,19 @@ payout = client.payouts.create(
             <span>Listar chaves API</span>
           </div>
 
-          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.8rem 0.5rem 0.4rem' }}>
-            Eventos e Sistema
+          <div 
+            className={`dash-menu-item ${activeEndpointId === 'create_key' ? 'active' : ''}`}
+            onClick={() => { setActiveEndpointId('create_key'); setApiResponse(null); }}
+          >
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(245, 158, 11, 0.2)', color: 'var(--accent-amber)', padding: '2px 6px', borderRadius: '4px' }}>
+              POST
+            </span>
+            <span>Gerar nova chave</span>
           </div>
-          <div className="dash-menu-item"><Radio size={16} /> Webhooks e HMAC</div>
+
+          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.8rem 0.5rem 0.4rem' }}>
+            Sistema e Eventos
+          </div>
           <div 
             className={`dash-menu-item ${activeEndpointId === 'health' ? 'active' : ''}`}
             onClick={() => { setActiveEndpointId('health'); setApiResponse(null); }}
@@ -439,7 +527,7 @@ payout = client.payouts.create(
           <div className="code-core">
             <div className="code-header">
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Terminal size={14} color="var(--accent-amber)" /> Exemplo de integração
+                <Terminal size={14} color="var(--accent-amber)" /> Exemplo de integração v1
               </span>
               <button 
                 onClick={handleCopyCode}

@@ -18,18 +18,22 @@ export default function App() {
     <div>
       <Header activeTab={activeTab} onSelectTab={setActiveTab} />
 
-      <main>
+      <main role="main">
         {activeTab === 'docs' && (
-          <ApiDocs />
+          <div className="ds-container">
+            <ApiDocs />
+          </div>
         )}
 
         {activeTab === 'dashboard' && (
-          <DeveloperDashboard
-            transactions={transactions}
-            totalVolume={totalVolume}
-            totalCount={totalCount}
-            onRefresh={refetchTransactions}
-          />
+          <div className="ds-container">
+            <DeveloperDashboard
+              transactions={transactions}
+              totalVolume={totalVolume}
+              totalCount={totalCount}
+              onRefresh={refetchTransactions}
+            />
+          </div>
         )}
 
         {activeTab === 'playground' && (
@@ -39,17 +43,17 @@ export default function App() {
                 O gateway Pix <span>para desenvolvedores</span>
               </h1>
               <p>
-                Integre pagamentos Pix no seu site ou SaaS em 2 linhas de código com confirmação via webhook em tempo real.
+                Integre pagamentos Pix no seu site ou SaaS em poucas linhas de código com confirmação via webhook em tempo real.
               </p>
 
               <div className="hero-buttons">
-                <button className="btn-nested btn-nested-primary" onClick={() => setActiveTab('docs')}>
+                <button className="btn-ds btn-ds-primary" onClick={() => setActiveTab('docs')}>
                   <span>Ver documentação</span>
                   <div className="btn-icon-circle">
                     <BookOpen size={14} color="#000" />
                   </div>
                 </button>
-                <button className="btn-nested btn-nested-outline" onClick={() => setActiveTab('dashboard')}>
+                <button className="btn-ds btn-ds-outline" onClick={() => setActiveTab('dashboard')}>
                   <span>Abrir dashboard</span>
                   <div className="btn-icon-circle">
                     <ArrowRight size={14} />
