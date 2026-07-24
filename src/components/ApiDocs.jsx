@@ -124,7 +124,7 @@ function ChargeStatus({ id }) {
       id: 'pay_charge',
       method: 'POST',
       path: '/v1/charges/:id/pay',
-      title: 'Simular pagamento Pix',
+      title: 'Simular pagamento',
       description: 'Altera o status da cobrança para PAID e simula o disparo de webhook assíncrono.',
       bodyLabel: 'Corpo da requisição',
       contentType: 'application/json',
