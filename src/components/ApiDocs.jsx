@@ -418,7 +418,7 @@ function ChargeStatus({ id }) {
       </div>
 
       {/* 2. MIDDLE COLUMN */}
-      <div className="apidocs-body" style={{ padding: '2rem 1.5rem', overflowY: 'auto' }}>
+      <div key={activeEndpointId} className="apidocs-body view-transition-fade" style={{ padding: '2rem 1.5rem', overflowY: 'auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.75rem' }}>
           <span style={{
             background: currentEndpoint.method === 'POST' ? 'var(--accent-amber)' : 'rgba(16, 185, 129, 0.15)',

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="32" fill="#08090d" />
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="none" stroke="#f59e0b" stroke-width="5" stroke-opacity="0.4" />
+  
+  <!-- Silhouette Minimalista da Capivara em Tom Âmbar -->
+  <g fill="#f59e0b">
+    <!-- Cabeça e Focinho Característico da Capivara -->
+    <path d="M 32 64 C 32 44, 46 36, 68 36 L 90 36 C 100 36, 106 44, 106 56 L 106 72 C 106 84, 94 92, 78 92 L 52 92 C 38 92, 32 82, 32 64 Z" />
+    <!-- Orelha Pequena Arredondada -->
+    <circle cx="44" cy="34" r="8" fill="#fbbf24" />
+    <circle cx="44" cy="34" r="4" fill="#08090d" />
+  </g>
+
+  <!-- Detalhes do Rosto (Olho e Narina) em Fundo Escuro -->
+  <circle cx="82" cy="52" r="4.5" fill="#08090d" />
+  <path d="M 94 60 C 96 60, 98 62, 98 65 C 98 68, 95 70, 92 68 C 91 66, 92 61, 94 60 Z" fill="#08090d" />
+</svg>

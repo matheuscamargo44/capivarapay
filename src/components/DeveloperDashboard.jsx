@@ -141,7 +141,7 @@ export function DeveloperDashboard({ transactions, totalVolume, totalCount, onRe
         </div>
 
         {/* Main Dashboard Content Panels */}
-        <div>
+        <div key={activeTab} className="view-transition-fade">
 
           {/* TAB 1: VISÃO GERAL / SALES */}
           {(activeTab === 'overview' || activeTab === 'sales') && (
