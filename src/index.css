@@ -96,7 +96,7 @@ header {
   justify-self: start;
 }
 
-/* Desktop Navigation - Matematica e Visualmente no Centro Exato */
+/* Desktop Navigation - Centralizada */
 .nav-links {
   display: flex;
   gap: 1.25rem;
@@ -339,7 +339,7 @@ main {
 
 .grid-2 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.75rem;
   align-items: start;
   width: 100%;
@@ -397,6 +397,8 @@ pre {
   line-height: 1.6;
   -webkit-overflow-scrolling: touch;
   max-width: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 /* 4. Pix Widget */
@@ -413,7 +415,7 @@ pre {
 
 .widget-brand {
   font-weight: 800;
-  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
   flex-shrink: 0;
 }
 
@@ -425,10 +427,11 @@ pre {
 }
 
 .amount-val {
-  font-size: clamp(1.1rem, 3.5vw, 1.35rem);
+  font-size: clamp(1.05rem, 3.5vw, 1.35rem);
   font-weight: 800;
   color: var(--accent-amber);
   text-align: right;
+  white-space: nowrap;
 }
 
 .qr-container {
@@ -674,11 +677,11 @@ pre {
 
   main {
     margin: 1.5rem auto 2rem;
-    padding: 0 0.75rem;
+    padding: 0 0.5rem;
   }
 
   .hero {
-    padding: 1.25rem 0.5rem 1.5rem;
+    padding: 1.25rem 0.25rem 1.5rem;
   }
 
   .hero-buttons {
@@ -699,7 +702,26 @@ pre {
   }
 
   .widget-bezel-inner, .bezel-inner {
-    padding: 1rem !important;
+    padding: 0.85rem !important;
+  }
+
+  .widget-brand {
+    font-size: 0.95rem;
+  }
+
+  .amount-val {
+    font-size: 1.1rem;
+  }
+
+  .amount-label {
+    font-size: 0.68rem;
+  }
+
+  pre {
+    font-size: 0.72rem;
+    padding: 0.85rem;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   .qr-container {
@@ -710,7 +732,7 @@ pre {
   }
 
   .copia-cola-box {
-    padding: 0.35rem 0.45rem;
+    padding: 0.3rem 0.4rem;
     gap: 0.35rem;
     margin-bottom: 0.75rem;
   }
