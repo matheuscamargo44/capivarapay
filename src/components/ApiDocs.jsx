@@ -1,21 +1,35 @@
 import React, { useState } from 'react';
 import { 
-  Play, Check, Copy, ShieldCheck, Terminal, BookOpen, Key, 
-  Search, ChevronRight, Server, Zap, Radio 
+  Play, Check, Copy, Terminal, BookOpen, Key, 
+  Search, Server, Radio, ShieldCheck, ArrowRight
 } from 'lucide-react';
 import { apiClient } from '../services/apiClient';
 import { HighlightedCode } from '../utils/codeHighlighter';
 
 export function ApiDocs({ onShowToast }) {
   const [activeLang, setActiveLang] = useState('curl');
-  const [activeEndpoint, setActiveEndpoint] = useState('create_charge');
+  const [activeEndpointId, setActiveEndpointId] = useState('create_charge');
   const [isExecuting, setIsExecuting] = useState(false);
   const [apiResponse, setApiResponse] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
 
-  // High-End Code Snippets por Linguagem
-  const codeSnippets = {
-    curl: `curl -X POST https://api.capivarapay.com/v2/charges/pix \\
+  // Definição dos Endpoints e Referências da API
+  const endpointsData = {
+    create_charge: {
+      id: 'create_charge',
+      method: 'POST',
+      path: '/v2/charges/pix',
+      title: 'Criar cobrança',
+      description: 'Gera uma nova cobrança Pix instantânea com suporte a QR Code dinâmico, código copia e cola e disparo de webhook assíncrono.',
+      bodyLabel: 'Corpo da requisição',
+      contentType: 'application/json',
+      params: [
+        { name: 'amount', type: 'float (BRL)', required: true, desc: 'Valor da cobrança em Reais. Deve ser entre R$ 0,50 e R$ 50.000,00. Exemplo: 29.90.' },
+        { name: 'description', type: 'string', required: false, desc: 'Texto descritivo exibido ao pagador no aplicativo do banco.' },
+        { name: 'correlation_id', type: 'string (Idempotência)', required: false, desc: 'Identificador único de pedido do seu sistema para evitar duplicidade de pagamentos.' }
+      ],
+      codeSnippets: {
+        curl: `curl -X POST https://api.capivarapay.com/v2/charges/pix \\
   -H "Authorization: Bearer cap_test_demo_key" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -23,7 +37,7 @@ export function ApiDocs({ onShowToast }) {
     "description": "Assinatura Capivara Pro",
     "correlation_id": "ped_98124"
   }'`,
-    node: `import { CapivaraPay } from '@capivarapay/sdk';
+        node: `import { CapivaraPay } from '@capivarapay/sdk';
 
 const capivara = new CapivaraPay('cap_test_demo_key');
 
@@ -32,7 +46,7 @@ const charge = await capivara.pix.create({
   description: 'Assinatura Capivara Pro',
   correlation_id: 'ped_98124'
 });`,
-    python: `from capivarapay import CapivaraPay
+        python: `from capivarapay import CapivaraPay
 
 client = CapivaraPay(api_key="cap_test_demo_key")
 
@@ -41,7 +55,7 @@ charge = client.pix.create(
     description="Assinatura Capivara Pro",
     correlation_id="ped_98124"
 )`,
-    react: `import { usePixCharge } from '@capivarapay/react';
+        react: `import { usePixCharge } from '@capivarapay/react';
 
 function Checkout() {
   const { createCharge, loading } = usePixCharge();
@@ -49,38 +63,149 @@ function Checkout() {
   const handlePay = () => createCharge({ amount: 29.90 });
   return <button onClick={handlePay}>Pagar com Pix</button>;
 }`
+      }
+    },
+    list_charges: {
+      id: 'list_charges',
+      method: 'GET',
+      path: '/v2/charges',
+      title: 'Listar cobranças',
+      description: 'Retorna uma lista com todas as cobranças geradas ordenadas por data de criação.',
+      bodyLabel: 'Parâmetros de consulta',
+      contentType: 'URL Query',
+      params: [
+        { name: 'status', type: 'string', required: false, desc: 'Filtra cobranças por status (PENDING, PAID, EXPIRED).' },
+        { name: 'limit', type: 'integer', required: false, desc: 'Número máximo de registros a retornar (padrão: 50).' }
+      ],
+      codeSnippets: {
+        curl: `curl -X GET https://api.capivarapay.com/v2/charges \\
+  -H "Authorization: Bearer cap_test_demo_key"`,
+        node: `import { CapivaraPay } from '@capivarapay/sdk';
+
+const capivara = new CapivaraPay('cap_test_demo_key');
+const charges = await capivara.pix.list();`,
+        python: `from capivarapay import CapivaraPay
+
+client = CapivaraPay(api_key="cap_test_demo_key")
+charges = client.pix.list()`,
+        react: `import { usePixHistory } from '@capivarapay/react';
+
+function History() {
+  const { charges, loading } = usePixHistory();
+  return <div>Total: {charges.length}</div>;
+}`
+      }
+    },
+    create_payout: {
+      id: 'create_payout',
+      method: 'POST',
+      path: '/v2/payouts',
+      title: 'Solicitar saque Pix',
+      description: 'Realiza uma transferência Pix de saída para a chave financeira de destino informada.',
+      bodyLabel: 'Corpo da requisição',
+      contentType: 'application/json',
+      params: [
+        { name: 'amount', type: 'float (BRL)', required: true, desc: 'Valor a ser transferido em Reais.' },
+        { name: 'pix_key', type: 'string', required: true, desc: 'Chave Pix de destino (CPF, CNPJ, E-mail, Telefone ou Aleatória).' },
+        { name: 'pix_key_type', type: 'string', required: false, desc: 'Tipo da chave Pix. Exemplo: CPF.' }
+      ],
+      codeSnippets: {
+        curl: `curl -X POST https://api.capivarapay.com/v2/payouts \\
+  -H "Authorization: Bearer cap_live_8f2a91b4" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "amount": 150.00,
+    "pix_key": "12345678900",
+    "pix_key_type": "CPF"
+  }'`,
+        node: `import { CapivaraPay } from '@capivarapay/sdk';
+
+const capivara = new CapivaraPay('cap_live_8f2a91b4');
+const payout = await capivara.payouts.create({
+  amount: 150.00,
+  pix_key: '12345678900',
+  pix_key_type: 'CPF'
+});`,
+        python: `from capivarapay import CapivaraPay
+
+client = CapivaraPay(api_key="cap_live_8f2a91b4")
+payout = client.payouts.create(
+    amount=150.00,
+    pix_key="12345678900",
+    pix_key_type="CPF"
+)`,
+        react: `// Exemplo de integração de saque`
+      }
+    },
+    list_keys: {
+      id: 'list_keys',
+      method: 'GET',
+      path: '/v2/keys',
+      title: 'Listar chaves de API',
+      description: 'Retorna a lista de chaves secretas de produção e homologação cadastradas.',
+      bodyLabel: 'Parâmetros',
+      contentType: 'Nenhum',
+      params: [],
+      codeSnippets: {
+        curl: `curl -X GET https://api.capivarapay.com/v2/keys \\
+  -H "Authorization: Bearer cap_live_8f2a91b4"`,
+        node: `const keys = await capivara.keys.list();`,
+        python: `keys = client.keys.list()`,
+        react: `// Exemplo de listagem`
+      }
+    },
+    health: {
+      id: 'health',
+      method: 'GET',
+      path: '/v1/health',
+      title: 'Status dos serviços',
+      description: 'Retorna o status operacional do gateway e timestamp do servidor.',
+      bodyLabel: 'Parâmetros',
+      contentType: 'Nenhum',
+      params: [],
+      codeSnippets: {
+        curl: `curl -X GET https://api.capivarapay.com/v1/health`,
+        node: `const status = await capivara.health();`,
+        python: `status = client.health()`,
+        react: `// Status do gateway`
+      }
+    }
   };
+
+  const currentEndpoint = endpointsData[activeEndpointId] || endpointsData.create_charge;
 
   const handleExecuteRequest = async () => {
     setIsExecuting(true);
     try {
-      // Conecta com a API Express Real
-      const data = await apiClient.createCharge({
-        amount: 29.90,
-        description: 'Demonstração ao Vivo - ApiDocs',
-        correlation_id: `corr_docs_${Date.now()}`
-      });
-
-      setApiResponse({
-        status: 200,
-        statusText: 'OK',
-        timeMs: Math.floor(Math.random() * 40 + 20),
-        data: data
-      });
-
+      if (currentEndpoint.id === 'create_charge') {
+        const data = await apiClient.createCharge({
+          amount: 29.90,
+          description: 'Demonstração ao Vivo - ApiDocs',
+          correlation_id: `corr_docs_${Date.now()}`
+        });
+        setApiResponse({ status: 200, statusText: 'OK', timeMs: Math.floor(Math.random() * 30 + 15), data });
+      } else if (currentEndpoint.id === 'list_charges') {
+        const data = await apiClient.listCharges();
+        setApiResponse({ status: 200, statusText: 'OK', timeMs: 22, data });
+      } else if (currentEndpoint.id === 'health') {
+        const res = await fetch('/api/v1/health');
+        const data = await res.json();
+        setApiResponse({ status: 200, statusText: 'OK', timeMs: 10, data });
+      } else {
+        setApiResponse({
+          status: 200,
+          statusText: 'OK',
+          timeMs: 18,
+          data: { success: true, message: 'Operação simulada executada com sucesso.' }
+        });
+      }
       if (onShowToast) onShowToast('Requisição de API executada com sucesso!', 'success');
     } catch (err) {
       setApiResponse({
         status: 400,
         statusText: 'BAD REQUEST',
         timeMs: 15,
-        data: {
-          success: false,
-          error: {
-            code: 'EXECUTION_FAILED',
-            message: err.message
-          }
-        }
+        data: { success: false, error: { code: 'EXECUTION_FAILED', message: err.message } }
       });
     } finally {
       setIsExecuting(false);
@@ -88,7 +213,7 @@ function Checkout() {
   };
 
   const handleCopyCode = () => {
-    navigator.clipboard.writeText(codeSnippets[activeLang]);
+    navigator.clipboard.writeText(currentEndpoint.codeSnippets[activeLang]);
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
   };
@@ -101,7 +226,7 @@ function Checkout() {
       overflow: 'hidden'
     }}>
       
-      {/* 1. LEFT SIDEBAR: NAVEGAÇÃO DA DOCUMENTAÇÃO */}
+      {/* 1. LEFT SIDEBAR */}
       <div className="apidocs-sidebar" style={{
         background: '#080a0e',
         borderRight: '1px solid var(--border-hairline)',
@@ -110,7 +235,6 @@ function Checkout() {
         flexDirection: 'column',
         gap: '1.25rem'
       }}>
-        {/* Search Input */}
         <div style={{
           position: 'relative',
           background: 'rgba(255, 255, 255, 0.03)',
@@ -136,94 +260,99 @@ function Checkout() {
           />
         </div>
 
-        {/* Menu Navigation Items */}
         <div className="apidocs-menu-container" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.4rem 0.5rem' }}>
             Visão geral
           </div>
-          <div className="dash-menu-item">
-            <BookOpen size={16} /> Introdução
-          </div>
-          <div className="dash-menu-item">
-            <Key size={16} /> Autenticação e chaves
-          </div>
+          <div className="dash-menu-item"><BookOpen size={16} /> Introdução</div>
+          <div className="dash-menu-item"><Key size={16} /> Autenticação e chaves</div>
 
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.8rem 0.5rem 0.4rem' }}>
             Endpoints Pix
           </div>
+          
           <div 
-            className={`dash-menu-item ${activeEndpoint === 'create_charge' ? 'active' : ''}`}
-            onClick={() => setActiveEndpoint('create_charge')}
+            className={`dash-menu-item ${activeEndpointId === 'create_charge' ? 'active' : ''}`}
+            onClick={() => { setActiveEndpointId('create_charge'); setApiResponse(null); }}
           >
-            <span style={{ 
-              fontSize: '0.68rem', 
-              fontWeight: 800, 
-              background: 'rgba(245, 158, 11, 0.2)', 
-              color: 'var(--accent-amber)', 
-              padding: '2px 6px', 
-              borderRadius: '4px' 
-            }}>
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(245, 158, 11, 0.2)', color: 'var(--accent-amber)', padding: '2px 6px', borderRadius: '4px' }}>
               POST
             </span>
             <span>Criar cobrança</span>
           </div>
 
-          <div className="dash-menu-item">
-            <span style={{ 
-              fontSize: '0.68rem', 
-              fontWeight: 800, 
-              background: 'rgba(255, 255, 255, 0.08)', 
-              color: 'var(--text-secondary)', 
-              padding: '2px 6px', 
-              borderRadius: '4px' 
-            }}>
+          <div 
+            className={`dash-menu-item ${activeEndpointId === 'list_charges' ? 'active' : ''}`}
+            onClick={() => { setActiveEndpointId('list_charges'); setApiResponse(null); }}
+          >
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-secondary)', padding: '2px 6px', borderRadius: '4px' }}>
               GET
             </span>
-            <span>Listar transações</span>
+            <span>Listar cobranças</span>
+          </div>
+
+          <div 
+            className={`dash-menu-item ${activeEndpointId === 'create_payout' ? 'active' : ''}`}
+            onClick={() => { setActiveEndpointId('create_payout'); setApiResponse(null); }}
+          >
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(245, 158, 11, 0.2)', color: 'var(--accent-amber)', padding: '2px 6px', borderRadius: '4px' }}>
+              POST
+            </span>
+            <span>Solicitar saque Pix</span>
+          </div>
+
+          <div 
+            className={`dash-menu-item ${activeEndpointId === 'list_keys' ? 'active' : ''}`}
+            onClick={() => { setActiveEndpointId('list_keys'); setApiResponse(null); }}
+          >
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-secondary)', padding: '2px 6px', borderRadius: '4px' }}>
+              GET
+            </span>
+            <span>Listar chaves API</span>
           </div>
 
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.8rem 0.5rem 0.4rem' }}>
-            Eventos assíncronos
+            Eventos e Sistema
           </div>
-          <div className="dash-menu-item">
-            <Radio size={16} /> Webhooks e HMAC
-          </div>
-          <div className="dash-menu-item">
+          <div className="dash-menu-item"><Radio size={16} /> Webhooks e HMAC</div>
+          <div 
+            className={`dash-menu-item ${activeEndpointId === 'health' ? 'active' : ''}`}
+            onClick={() => { setActiveEndpointId('health'); setApiResponse(null); }}
+          >
             <Server size={16} /> Status dos serviços
           </div>
         </div>
-
       </div>
 
-      {/* 2. MIDDLE COLUMN: DESCRIÇÃO E PARÂMETROS DO ENDPOINT */}
+      {/* 2. MIDDLE COLUMN */}
       <div className="apidocs-body" style={{ padding: '2rem 1.5rem', overflowY: 'auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.75rem' }}>
           <span style={{
-            background: 'var(--accent-amber)',
-            color: '#000',
+            background: currentEndpoint.method === 'POST' ? 'var(--accent-amber)' : 'rgba(255,255,255,0.1)',
+            color: currentEndpoint.method === 'POST' ? '#000' : '#fff',
             fontWeight: 800,
             fontSize: '0.82rem',
             padding: '0.2rem 0.6rem',
             borderRadius: 'var(--radius-pill)'
           }}>
-            POST
+            {currentEndpoint.method}
           </span>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-            /v2/charges/pix
+            {currentEndpoint.path}
           </span>
         </div>
 
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.75rem' }}>
-          Criar cobrança
+          {currentEndpoint.title}
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem' }}>
-          Gera uma nova cobrança Pix instantânea com suporte a QR Code dinâmico, código copia e cola e disparo de webhook assíncrono.
+          {currentEndpoint.description}
         </p>
 
-        {/* Parameters Section */}
+        {/* Parameters Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1.25rem' }}>
           <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-            Corpo da requisição
+            {currentEndpoint.bodyLabel}
           </span>
           <span style={{ 
             fontSize: '0.75rem', 
@@ -235,58 +364,38 @@ function Checkout() {
             padding: '0.2rem 0.6rem', 
             borderRadius: 'var(--radius-pill)' 
           }}>
-            application/json
+            {currentEndpoint.contentType}
           </span>
         </div>
 
+        {/* Parameters List */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-          
-          {/* Parameter 1 */}
-          <div className="bezel-outer">
-            <div className="bezel-inner" style={{ padding: '1rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent-amber)' }}>amount</span>
-                <span style={{ fontSize: '0.75rem', color: '#ef4444', fontWeight: 700 }}>Obrigatório</span>
+          {currentEndpoint.params.length === 0 ? (
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Este endpoint não requer corpo de requisição.</div>
+          ) : (
+            currentEndpoint.params.map(p => (
+              <div key={p.name} className="bezel-outer">
+                <div className="bezel-inner" style={{ padding: '1rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: p.required ? 'var(--accent-amber)' : 'var(--text-primary)' }}>
+                      {p.name}
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: p.required ? '#ef4444' : 'var(--text-muted)', fontWeight: p.required ? 700 : 400 }}>
+                      {p.required ? 'Obrigatório' : 'Opcional'}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>{p.type}</div>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
+                    {p.desc}
+                  </p>
+                </div>
               </div>
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>float (BRL)</div>
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-                Valor da cobrança em Reais. Deve ser maior que R$ 0,00. Exemplo: `29.90`.
-              </p>
-            </div>
-          </div>
-
-          {/* Parameter 2 */}
-          <div className="bezel-outer">
-            <div className="bezel-inner" style={{ padding: '1rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--text-primary)' }}>description</span>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Opcional</span>
-              </div>
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>string</div>
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-                Texto descritivo exibido ao pagador no aplicativo do banco.
-              </p>
-            </div>
-          </div>
-
-          {/* Parameter 3 */}
-          <div className="bezel-outer">
-            <div className="bezel-inner" style={{ padding: '1rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--text-primary)' }}>correlation_id</span>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Opcional</span>
-              </div>
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>string (Idempotência)</div>
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-                Identificador único de pedido do seu sistema para evitar duplicidade de pagamentos.
-              </p>
-            </div>
-          </div>
-
+            ))
+          )}
         </div>
       </div>
 
-      {/* 3. RIGHT COLUMN: PLAYGROUND DE CÓDIGO E RESPOSTA AO VIVO */}
+      {/* 3. RIGHT COLUMN */}
       <div className="apidocs-playground" style={{
         background: '#07080c',
         borderLeft: '1px solid var(--border-hairline)',
@@ -330,7 +439,7 @@ function Checkout() {
           <div className="code-core">
             <div className="code-header">
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Terminal size={14} color="var(--accent-amber)" /> Payload da requisição
+                <Terminal size={14} color="var(--accent-amber)" /> Exemplo de integração
               </span>
               <button 
                 onClick={handleCopyCode}
@@ -340,7 +449,7 @@ function Checkout() {
               </button>
             </div>
             <pre style={{ fontSize: '0.78rem', maxHeight: '240px' }}>
-              <HighlightedCode code={codeSnippets[activeLang]} lang={activeLang} />
+              <HighlightedCode code={currentEndpoint.codeSnippets[activeLang] || currentEndpoint.codeSnippets.curl} lang={activeLang} />
             </pre>
           </div>
         </div>

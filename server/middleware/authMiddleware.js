@@ -1,8 +1,9 @@
 export function authMiddleware(req, res, next) {
   const authHeader = req.headers['authorization'];
 
+  // Endpoints públicos que dispensam autenticação
   const publicPaths = ['/api/v1/health'];
-  if (publicPaths.some(path => req.path.startsWith(path)) || req.method === 'GET') {
+  if (publicPaths.some(path => req.path.startsWith(path)) || (req.method === 'GET' && req.path === '/api/v1/charges')) {
     return next();
   }
 
@@ -11,7 +12,7 @@ export function authMiddleware(req, res, next) {
       success: false,
       error: {
         code: 'UNAUTHORIZED',
-        message: 'Cabecalho Authorization no formato Bearer cap_live_... e obrigatorio.'
+        message: 'Cabeçalho Authorization no formato Bearer cap_live_... é obrigatório.'
       }
     });
   }
@@ -22,11 +23,12 @@ export function authMiddleware(req, res, next) {
       success: false,
       error: {
         code: 'FORBIDDEN',
-        message: 'API Key invalida ou credencial nao reconhecida.'
+        message: 'Chave de API inválida ou credencial não reconhecida.'
       }
     });
   }
 
   req.apiKey = token;
+  req.isTestMode = token.startsWith('cap_test_');
   next();
 }

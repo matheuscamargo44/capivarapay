@@ -1,0 +1,324 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Capivara Pay API",
+    "description": "API oficial do gateway Pix Open-Source Capivara Pay. Permite a geração de cobranças Pix instantâneas, saques (payouts), gestão de chaves de API e disparos de webhooks com assinatura HMAC SHA-256.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Suporte Capivara Pay",
+      "url": "https://d18c33zvi7gwez.cloudfront.net"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://d18c33zvi7gwez.cloudfront.net/api/v1",
+      "description": "Servidor de Produção (HTTPS CloudFront)"
+    },
+    {
+      "url": "http://localhost:5000/api/v1",
+      "description": "Servidor Local de Desenvolvimento"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key (cap_live_... ou cap_test_...)"
+      }
+    },
+    "schemas": {
+      "Charge": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "tx_cap_8f912a" },
+          "correlation_id": { "type": "string", "example": "ped_98124" },
+          "amount": { "type": "number", "format": "float", "example": 29.90 },
+          "description": { "type": "string", "example": "Assinatura Capivara Pro" },
+          "status": { "type": "string", "enum": ["PENDING", "PAID", "EXPIRED"], "example": "PENDING" },
+          "pix_copy_paste": { "type": "string", "example": "00020126580014br.gov.bcb.pix0136tx_cap_8f912a..." },
+          "created_at": { "type": "string", "format": "date-time" },
+          "expires_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Payout": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "po_cap_3a91f" },
+          "amount": { "type": "number", "format": "float", "example": 150.00 },
+          "pix_key": { "type": "string", "example": "12345678900" },
+          "pix_key_type": { "type": "string", "example": "CPF" },
+          "status": { "type": "string", "example": "PROCESSING" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ApiKey": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "key_1" },
+          "name": { "type": "string", "example": "Produção Principal" },
+          "masked_key": { "type": "string", "example": "cap_live_...8f2a" },
+          "type": { "type": "string", "enum": ["LIVE", "TEST"], "example": "LIVE" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string", "example": "UNAUTHORIZED" },
+              "message": { "type": "string", "example": "Cabeçalho Authorization no formato Bearer é obrigatório." }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Verificar status dos serviços",
+        "description": "Retorna o status operacional do gateway e timestamp do servidor.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Gateway Operacional",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "data": {
+                    "status": "ONLINE",
+                    "gateway": "Capivara Pay Pix Gateway",
+                    "version": "1.0.0",
+                    "timestamp": "2026-07-23T23:42:00.000Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/charges": {
+      "post": {
+        "summary": "Criar cobrança",
+        "description": "Gera uma nova cobrança Pix instantânea com QR Code dinâmico e código copia e cola.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["amount"],
+                "properties": {
+                  "amount": { "type": "number", "format": "float", "example": 29.90, "description": "Valor em Reais (entre R$ 0,50 e R$ 50.000,00)" },
+                  "description": { "type": "string", "example": "Assinatura Capivara Pro" },
+                  "correlation_id": { "type": "string", "example": "ped_98124", "description": "Identificador único para garantia de idempotência" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cobrança criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/Charge" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Dados de requisição inválidos", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "401": { "description": "Chave de API ausente ou inválida", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "429": { "description": "Limite de taxa excedido (Rate Limit)", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      },
+      "get": {
+        "summary": "Listar cobranças",
+        "description": "Retorna o histórico das últimas cobranças geradas.",
+        "responses": {
+          "200": {
+            "description": "Lista de cobranças retornada com sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "data": [],
+                  "total": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/charges/{id}": {
+      "get": {
+        "summary": "Buscar cobrança por ID",
+        "description": "Retorna o status atualizado de uma cobrança específica.",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" }, "example": "tx_cap_8f912a" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cobrança encontrada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "data": { "id": "tx_cap_8f912a", "status": "PAID" }
+                }
+              }
+            }
+          },
+          "404": { "description": "Cobrança não encontrada" }
+        }
+      }
+    },
+    "/charges/{id}/pay": {
+      "post": {
+        "summary": "Simular pagamento Pix",
+        "description": "Altera o status de uma cobrança para PAID e dispara o webhook assíncrono.",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" }, "example": "tx_cap_8f912a" }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_url": { "type": "string", "example": "https://meusite.com/api/webhooks/pix" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pagamento efetuado e webhook disparado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "data": {
+                    "already_paid": false,
+                    "webhook": { "delivered": true, "statusCode": 200 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payouts": {
+      "post": {
+        "summary": "Solicitar saque (Payout)",
+        "description": "Realiza uma transferência Pix de saída para a chave de destino informada.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["amount", "pix_key"],
+                "properties": {
+                  "amount": { "type": "number", "format": "float", "example": 100.00 },
+                  "pix_key": { "type": "string", "example": "12345678900" },
+                  "pix_key_type": { "type": "string", "enum": ["CPF", "CNPJ", "EMAIL", "PHONE", "RANDOM"], "example": "CPF" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Saque solicitado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/Payout" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/keys": {
+      "get": {
+        "summary": "Listar chaves de API",
+        "description": "Retorna as chaves de API cadastradas para a conta.",
+        "responses": {
+          "200": {
+            "description": "Lista de chaves",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "data": [
+                    { "id": "key_1", "name": "Produção Principal", "masked_key": "cap_live_...8f2a", "type": "LIVE" }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Gerar nova chave de API",
+        "description": "Cria uma nova chave secreta nos ambientes de Produção ou Teste.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "Nova Chave Produção" },
+                  "type": { "type": "string", "enum": ["LIVE", "TEST"], "example": "LIVE" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Chave criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/ApiKey" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@ import cors from 'cors';
 import { pixService } from './services/pixService.js';
 import { webhookService } from './services/webhookService.js';
 import { authMiddleware } from './middleware/authMiddleware.js';
+import { rateLimiter } from './middleware/rateLimiter.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -11,8 +12,19 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Rate Limiting Global contra ataques de força bruta e spam
+app.use('/api/v1', rateLimiter);
+
+// Autenticação Bearer Token
 app.use('/api/v1', authMiddleware);
 
+// In-Memory API Keys Store
+const apiKeysStore = new Map([
+  ['cap_live_8f2a91b4', { id: 'key_1', name: 'Produção Principal', token: 'cap_live_8f2a91b4', type: 'LIVE', created_at: new Date().toISOString() }],
+  ['cap_test_demo_key', { id: 'key_2', name: 'Ambiente de Testes', token: 'cap_test_demo_key', type: 'TEST', created_at: new Date().toISOString() }]
+]);
+
+// Healthcheck
 app.get('/api/v1/health', (req, res) => {
   res.json({
     success: true,
@@ -25,6 +37,54 @@ app.get('/api/v1/health', (req, res) => {
   });
 });
 
+// Endpoint para Gestão de API Keys
+app.get('/api/v1/keys', (req, res) => {
+  const keys = Array.from(apiKeysStore.values()).map(key => ({
+    id: key.id,
+    name: key.name,
+    masked_key: `${key.token.substring(0, 9)}...${key.token.slice(-4)}`,
+    full_key: key.token,
+    type: key.type,
+    created_at: key.created_at
+  }));
+
+  res.json({
+    success: true,
+    data: keys
+  });
+});
+
+app.post('/api/v1/keys', (req, res) => {
+  const { name, type } = req.body;
+  const isLive = type === 'LIVE';
+  const prefix = isLive ? 'cap_live_' : 'cap_test_';
+  const randomHash = Math.random().toString(36).substring(2, 10);
+  const newToken = `${prefix}${randomHash}`;
+
+  const newKey = {
+    id: `key_${Date.now()}`,
+    name: name || (isLive ? 'Chave de Produção' : 'Chave de Testes'),
+    token: newToken,
+    type: isLive ? 'LIVE' : 'TEST',
+    created_at: new Date().toISOString()
+  };
+
+  apiKeysStore.set(newToken, newKey);
+
+  res.status(201).json({
+    success: true,
+    data: {
+      id: newKey.id,
+      name: newKey.name,
+      masked_key: `${newKey.token.substring(0, 9)}...${newKey.token.slice(-4)}`,
+      full_key: newKey.token,
+      type: newKey.type,
+      created_at: newKey.created_at
+    }
+  });
+});
+
+// Endpoint para Criar Cobrança Pix
 app.post('/api/v1/charges', async (req, res, next) => {
   try {
     const { amount, description, correlation_id, customer } = req.body;
@@ -34,7 +94,7 @@ app.post('/api/v1/charges', async (req, res, next) => {
         success: false,
         error: {
           code: 'INVALID_AMOUNT',
-          message: 'O campo amount deve ser um numero positivo maior que zero.'
+          message: 'O campo amount deve ser um número positivo maior que zero.'
         }
       });
     }
@@ -50,6 +110,7 @@ app.post('/api/v1/charges', async (req, res, next) => {
   }
 });
 
+// Endpoint para Listar Cobranças
 app.get('/api/v1/charges', async (req, res, next) => {
   try {
     const charges = await pixService.listCharges();
@@ -63,6 +124,7 @@ app.get('/api/v1/charges', async (req, res, next) => {
   }
 });
 
+// Endpoint para Buscar Cobrança por ID
 app.get('/api/v1/charges/:id', async (req, res, next) => {
   try {
     const charge = await pixService.getCharge(req.params.id);
@@ -71,7 +133,7 @@ app.get('/api/v1/charges/:id', async (req, res, next) => {
         success: false,
         error: {
           code: 'CHARGE_NOT_FOUND',
-          message: `Cobranca com ID ${req.params.id} nao encontrada.`
+          message: `Cobrança com ID ${req.params.id} não encontrada.`
         }
       });
     }
@@ -85,6 +147,7 @@ app.get('/api/v1/charges/:id', async (req, res, next) => {
   }
 });
 
+// Endpoint para Marcar Pagamento Pix (Simulação / Webhook)
 app.post('/api/v1/charges/:id/pay', async (req, res, next) => {
   try {
     const result = await pixService.markAsPaid(req.params.id);
@@ -93,7 +156,7 @@ app.post('/api/v1/charges/:id/pay', async (req, res, next) => {
         success: false,
         error: {
           code: 'CHARGE_NOT_FOUND',
-          message: `Cobranca ${req.params.id} nao encontrada.`
+          message: `Cobrança ${req.params.id} não encontrada.`
         }
       });
     }
@@ -118,6 +181,7 @@ app.post('/api/v1/charges/:id/pay', async (req, res, next) => {
   }
 });
 
+// Endpoint para Saques (Payouts)
 app.post('/api/v1/payouts', (req, res, next) => {
   try {
     const { amount, pix_key, pix_key_type } = req.body;
@@ -127,7 +191,7 @@ app.post('/api/v1/payouts', (req, res, next) => {
         success: false,
         error: {
           code: 'MISSING_FIELDS',
-          message: 'Os campos amount e pix_key sao obrigatorios.'
+          message: 'Os campos amount e pix_key são obrigatórios.'
         }
       });
     }

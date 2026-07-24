@@ -2,10 +2,14 @@ import crypto from 'crypto';
 
 class WebhookService {
   generateHmacSignature(payload, secret = process.env.WEBHOOK_SECRET || 'whsec_capivara_default') {
-    const rawString = typeof payload === 'string' ? payload : JSON.stringify(payload);
+    const timestamp = Math.floor(Date.now() / 1000);
+    const rawPayload = typeof payload === 'string' ? payload : JSON.stringify(payload);
+    const signedPayload = `${timestamp}.${rawPayload}`;
     const hmac = crypto.createHmac('sha256', secret);
-    hmac.update(rawString);
-    return `sha256=${hmac.digest('hex')}`;
+    hmac.update(signedPayload);
+    const signatureHex = hmac.digest('hex');
+    
+    return `t=${timestamp},v1=${signatureHex}`;
   }
 
   async dispatchEvent(targetUrl, eventType, data) {
@@ -18,7 +22,7 @@ class WebhookService {
     const signature = this.generateHmacSignature(payload);
 
     if (!targetUrl) {
-      return { success: false, delivered: false, message: 'URL de webhook nao informada' };
+      return { success: false, delivered: false, message: 'URL de webhook não informada' };
     }
 
     try {

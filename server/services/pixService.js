@@ -16,6 +16,14 @@ class PixService {
   }
 
   async createCharge(params) {
+    const amountNum = parseFloat(params.amount);
+    if (isNaN(amountNum) || amountNum < 0.50 || amountNum > 50000.00) {
+      const error = new Error('O valor da cobrança Pix deve estar entre R$ 0,50 e R$ 50.000,00.');
+      error.statusCode = 400;
+      error.code = 'INVALID_AMOUNT_RANGE';
+      throw error;
+    }
+
     return await this.activeProvider.createCharge(params);
   }
 
