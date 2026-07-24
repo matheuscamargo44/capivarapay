@@ -34,6 +34,7 @@ jobs:
           aws s3 sync dist/ s3://capivarapay-frontend --delete
 
       - name: Invalidate CloudFront Cache
+        continue-on-error: true
         run: |
           aws cloudfront create-invalidation --distribution-id EG3GISBLMK7LO --paths "/*"
 
