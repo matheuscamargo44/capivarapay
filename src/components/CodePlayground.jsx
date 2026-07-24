@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check, Code, Zap } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 import { HighlightedCode } from '../utils/codeHighlighter';
 
 export function CodePlayground() {
@@ -7,15 +7,13 @@ export function CodePlayground() {
   const [copied, setCopied] = useState(false);
 
   const snippets = {
-    script: `<!-- Integração em 1 linha HTML (Sem código backend) -->
-<script 
+    script: `<script 
   src="https://d18c33zvi7gwez.cloudfront.net/checkout.js" 
   data-key="cap_test_demo_key" 
   data-amount="29.90"
   data-description="Assinatura Capivara Pro"
 ></script>`,
-    react: `// Componente React Drop-in Pronto
-import { CapivaraCheckout } from '@capivarapay/react';
+    react: `import { CapivaraCheckout } from '@capivarapay/react';
 
 export function ComponentePagamento() {
   return (
@@ -27,8 +25,7 @@ export function ComponentePagamento() {
     />
   );
 }`,
-    node: `// Node.js / Express SDK
-import { CapivaraPay } from '@capivarapay/sdk';
+    node: `import { CapivaraPay } from '@capivarapay/sdk';
 
 const capivara = new CapivaraPay('cap_test_demo_key');
 

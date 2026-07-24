@@ -13,7 +13,7 @@ export function ApiDocs({ onShowToast }) {
   const [apiResponse, setApiResponse] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
 
-  // Definição dos Endpoints reais da API v1
+  // Definição dos Endpoints reais da API
   const endpointsData = {
     create_charge: {
       id: 'create_charge',
@@ -112,7 +112,12 @@ function History() {
   -H "Authorization: Bearer cap_test_demo_key"`,
         node: `const charge = await capivara.pix.get('tx_cap_8f912a');`,
         python: `charge = client.pix.get('tx_cap_8f912a')`,
-        react: `// Buscar detalhes da cobrança`
+        react: `import { usePixCharge } from '@capivarapay/react';
+
+function ChargeStatus({ id }) {
+  const { charge } = usePixCharge(id);
+  return <div>Status: {charge?.status}</div>;
+}`
       }
     },
     pay_charge: {
@@ -135,14 +140,14 @@ function History() {
   }'`,
         node: `const result = await capivara.pix.markAsPaid('tx_cap_8f912a');`,
         python: `result = client.pix.mark_as_paid('tx_cap_8f912a')`,
-        react: `// Simulação de pagamento`
+        react: `const result = await capivara.pix.markAsPaid('tx_cap_8f912a');`
       }
     },
     create_payout: {
       id: 'create_payout',
       method: 'POST',
       path: '/v1/payouts',
-      title: 'Solicitar saque Pix',
+      title: 'Solicitar saque',
       description: 'Realiza uma transferência Pix de saída para a chave financeira de destino informada.',
       bodyLabel: 'Corpo da requisição',
       contentType: 'application/json',
@@ -170,7 +175,7 @@ function History() {
     pix_key="12345678900",
     pix_key_type="CPF"
 )`,
-        react: `// Solicitação de saque`
+        react: `const payout = await capivara.payouts.create({ amount: 150.00 });`
       }
     },
     list_keys: {
@@ -187,7 +192,7 @@ function History() {
   -H "Authorization: Bearer cap_live_8f2a91b4"`,
         node: `const keys = await capivara.keys.list();`,
         python: `keys = client.keys.list()`,
-        react: `// Listagem de chaves`
+        react: `const keys = await capivara.keys.list();`
       }
     },
     create_key: {
@@ -212,7 +217,7 @@ function History() {
   }'`,
         node: `const newKey = await capivara.keys.create({ name: 'Nova Chave', type: 'LIVE' });`,
         python: `new_key = client.keys.create(name='Nova Chave', type='LIVE')`,
-        react: `// Geração de chave`
+        react: `const newKey = await capivara.keys.create({ name: 'Nova Chave', type: 'LIVE' });`
       }
     },
     health: {
@@ -228,7 +233,7 @@ function History() {
         curl: `curl -X GET https://api.capivarapay.com/api/v1/health`,
         node: `const status = await capivara.health();`,
         python: `status = client.health()`,
-        react: `// Status do gateway`
+        react: `const status = await capivara.health();`
       }
     }
   };
@@ -309,7 +314,7 @@ function History() {
           <Search size={14} color="var(--text-muted)" />
           <input 
             type="text" 
-            placeholder="Buscar endpoints v1..." 
+            placeholder="Buscar endpoints..." 
             style={{
               background: 'transparent',
               border: 'none',
@@ -323,7 +328,7 @@ function History() {
 
         <div className="apidocs-menu-container" style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.4rem 0.5rem' }}>
-            Cobranças Pix (API v1)
+            Cobranças Pix
           </div>
           
           <div 
@@ -340,7 +345,7 @@ function History() {
             className={`dash-menu-item ${activeEndpointId === 'list_charges' ? 'active' : ''}`}
             onClick={() => { setActiveEndpointId('list_charges'); setApiResponse(null); }}
           >
-            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-secondary)', padding: '2px 6px', borderRadius: '4px' }}>
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', padding: '2px 6px', borderRadius: '4px' }}>
               GET
             </span>
             <span>Listar cobranças</span>
@@ -350,7 +355,7 @@ function History() {
             className={`dash-menu-item ${activeEndpointId === 'get_charge' ? 'active' : ''}`}
             onClick={() => { setActiveEndpointId('get_charge'); setApiResponse(null); }}
           >
-            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-secondary)', padding: '2px 6px', borderRadius: '4px' }}>
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', padding: '2px 6px', borderRadius: '4px' }}>
               GET
             </span>
             <span>Buscar por ID</span>
@@ -367,7 +372,7 @@ function History() {
           </div>
 
           <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', padding: '0.8rem 0.5rem 0.4rem' }}>
-            Saques e Chaves (API v1)
+            Saques e chaves
           </div>
 
           <div 
@@ -377,14 +382,14 @@ function History() {
             <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(245, 158, 11, 0.2)', color: 'var(--accent-amber)', padding: '2px 6px', borderRadius: '4px' }}>
               POST
             </span>
-            <span>Solicitar saque Pix</span>
+            <span>Solicitar saque</span>
           </div>
 
           <div 
             className={`dash-menu-item ${activeEndpointId === 'list_keys' ? 'active' : ''}`}
             onClick={() => { setActiveEndpointId('list_keys'); setApiResponse(null); }}
           >
-            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-secondary)', padding: '2px 6px', borderRadius: '4px' }}>
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', padding: '2px 6px', borderRadius: '4px' }}>
               GET
             </span>
             <span>Listar chaves API</span>
@@ -416,8 +421,8 @@ function History() {
       <div className="apidocs-body" style={{ padding: '2rem 1.5rem', overflowY: 'auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.75rem' }}>
           <span style={{
-            background: currentEndpoint.method === 'POST' ? 'var(--accent-amber)' : 'rgba(255,255,255,0.1)',
-            color: currentEndpoint.method === 'POST' ? '#000' : '#fff',
+            background: currentEndpoint.method === 'POST' ? 'var(--accent-amber)' : 'rgba(16, 185, 129, 0.15)',
+            color: currentEndpoint.method === 'POST' ? '#000' : '#34d399',
             fontWeight: 800,
             fontSize: '0.82rem',
             padding: '0.2rem 0.6rem',
@@ -527,7 +532,7 @@ function History() {
           <div className="code-core">
             <div className="code-header">
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Terminal size={14} color="var(--accent-amber)" /> Exemplo de integração v1
+                <Terminal size={14} color="var(--accent-amber)" /> Exemplo de integração
               </span>
               <button 
                 onClick={handleCopyCode}
