@@ -33,7 +33,7 @@ export function PayoutModal({ totalBalance }) {
   return (
     <>
       <button className="btn-nested btn-nested-primary" onClick={() => setIsOpen(true)}>
-        <span>Solicitar saque Pix</span>
+        <span>Solicitar saque</span>
         <div className="btn-icon-circle">
           <ArrowUpRight size={14} color="#000" />
         </div>
@@ -134,7 +134,7 @@ export function PayoutModal({ totalBalance }) {
                     disabled={loading}
                     style={{ width: '100%', justifyContent: 'center' }}
                   >
-                    <span>{loading ? 'Processando...' : 'Confirmar saque Pix'}</span>
+                    <span>{loading ? 'Processando...' : 'Confirmar saque'}</span>
                     <div className="btn-icon-circle">
                       <Check size={14} color="#000" />
                     </div>
