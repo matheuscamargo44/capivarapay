@@ -36,13 +36,7 @@ jobs:
       - name: Invalidate CloudFront Cache
         continue-on-error: true
         run: |
-          DIST_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?contains(Origins.Items[0].DomainName, 'capivarapay-frontend')].Id | [0]" --output text)
-          echo "Found CloudFront Distribution ID: $DIST_ID"
-          if [ -n "$DIST_ID" ] && [ "$DIST_ID" != "None" ] && [ "$DIST_ID" != "null" ]; then
-            aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths "/*"
-          else
-            echo "Could not find distribution ID dynamically"
-          fi
+          AWS_REGION= aws cloudfront create-invalidation --distribution-id EG3GISBLMK7LO --paths "/*"
 
   deploy-backend:
     runs-on: ubuntu-latest
