@@ -165,7 +165,7 @@ function Checkout() {
             }}>
               POST
             </span>
-            <span>Criar cobrança Pix</span>
+            <span>Criar cobrança</span>
           </div>
 
           <div className="dash-menu-item">
@@ -214,17 +214,30 @@ function Checkout() {
         </div>
 
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.75rem' }}>
-          Criar cobrança Pix
+          Criar cobrança
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem' }}>
-          Gera uma nova cobrança Pix instantânea com suporte a QR Code dinâmico, código copia-e-cola e disparo de webhook assíncrono.
+          Gera uma nova cobrança Pix instantânea com suporte a QR Code dinâmico, código copia e cola e disparo de webhook assíncrono.
         </p>
 
         {/* Parameters Section */}
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span>Request Body</span>
-          <span className="eyebrow-badge" style={{ margin: 0 }}>application/json</span>
-        </h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1.25rem' }}>
+          <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            Corpo da requisição
+          </span>
+          <span style={{ 
+            fontSize: '0.75rem', 
+            fontFamily: 'var(--font-mono)', 
+            fontWeight: 600, 
+            color: 'var(--accent-amber)', 
+            background: 'rgba(245, 158, 11, 0.1)', 
+            border: '1px solid var(--border-accent)', 
+            padding: '0.2rem 0.6rem', 
+            borderRadius: 'var(--radius-pill)' 
+          }}>
+            application/json
+          </span>
+        </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
           
